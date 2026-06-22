@@ -171,6 +171,34 @@ const ProjectSchema = new mongoose.Schema(
     githubUrl: { type: String },
     featured: { type: Boolean, default: false },
     order: { type: Number, default: 0 },
+    
+    // Rich Case Study Fields
+    category: { type: String },
+    shortDescription: { type: String },
+    fullDescription: { type: String },
+    thumbnail: { type: String },
+    gallery: {
+      type: [
+        {
+          image: { type: String, required: true },
+          alt: { type: String, required: true },
+        },
+      ],
+      default: [],
+    },
+    technologies: { type: [String], default: [] },
+    features: { type: [String], default: [] },
+    challenges: { type: [String], default: [] },
+    solutions: { type: [String], default: [] },
+    projectType: { type: String },
+    clientName: { type: String },
+    industry: { type: String },
+    duration: { type: String },
+    status: { type: String, enum: ["Completed", "In Progress"], default: "Completed" },
+    seo: {
+      metaTitle: { type: String },
+      metaDescription: { type: String },
+    },
   },
   { timestamps: true }
 );
@@ -233,6 +261,41 @@ This full-stack educational system was engineered to streamline course registrat
     githubUrl: "https://github.com/DhyeyBhuva2003/usi3d-platform",
     featured: true,
     order: 1,
+    
+    // Rich Case Study Details
+    category: "Educational Technology",
+    shortDescription: "A comprehensive learning portal with course lists, dashboard profiles, Three.js CAD viewers, and billing systems.",
+    fullDescription: "A robust multi-role portal created to transition the US Institute of 3D Technology from physical coordinates tracking to digital classrooms. Integrated Three.js allowed instant inspection of student 3D files directly inside Next.js page sheets.",
+    thumbnail: "",
+    gallery: [
+      {
+        image: "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=800&q=80",
+        alt: "Student Lab Workspace Dashboard"
+      },
+      {
+        image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
+        alt: "Course Catalog and Subscriptions Panel"
+      }
+    ],
+    technologies: ["Next.js", "React 19", "Three.js", "WebGL", "MongoDB", "Mongoose", "Tailwind CSS", "Stripe"],
+    features: ["Student Dashboard", "3D WebGL Model Viewer", "Admin Course Manager", "Stripe Billing Integrations", "Role-Based Authentication"],
+    challenges: [
+      "Rendering complex CAD and 3D files in standard browser windows without causing memory leaks or lag.",
+      "Handling student enrollments and secure grading permissions across three distinct user roles."
+    ],
+    solutions: [
+      "Implemented customized Three.js asset loaders, optimized geometry buffers, and disposed geometries on component unmount.",
+      "Designed strict Mongoose model rules, JWT cookies, and role-based Route Handlers for robust permission verification."
+    ],
+    projectType: "Dashboard",
+    clientName: "US Institute of 3D Technology",
+    industry: "Education & E-learning",
+    duration: "3 Months",
+    status: "Completed",
+    seo: {
+      metaTitle: "US Institute of 3D Technology Case Study | Dhyey Bhuva",
+      metaDescription: "Building a WebGL-based educational dashboard system for the US Institute of 3D Technology."
+    }
   },
   {
     title: "Neminath Travels – Full-Stack Vehicle&Driver Booking Platform",
@@ -256,6 +319,41 @@ A custom logistic dashboard built to manage traveler bookings, driver allocation
     githubUrl: "https://github.com/DhyeyBhuva2003/neminath-booking-system",
     featured: true,
     order: 2,
+    
+    // Rich Case Study Details
+    category: "Logistics & Transport",
+    shortDescription: "An automated passenger vehicle booking engine, maps routing, live dispatch boards, and fleet billing sheets.",
+    fullDescription: "A custom transportation dashboard engineered for Neminath Travels to automate manual passenger dispatch calls. Integrates maps to estimate distance, suggest pathways, and live sync driver locations.",
+    thumbnail: "",
+    gallery: [
+      {
+        image: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=800&q=80",
+        alt: "Driver Dispatch Dashboard"
+      },
+      {
+        image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80",
+        alt: "Passenger Booking Screen"
+      }
+    ],
+    technologies: ["Next.js", "React", "MongoDB", "Google Maps API", "Socket.io", "Tailwind CSS"],
+    features: ["Route Search & Booking", "Driver Dispatch System", "Dynamic Pricing Engine", "Google Maps Routing", "Admin Fleet Board"],
+    challenges: [
+      "Calculating accurate trip fare estimates based on actual travel distance and traffic delays.",
+      "Syncing live vehicle assignments between booking dashboards and drivers' mobile screens."
+    ],
+    solutions: [
+      "Integrated Google Maps Matrix API with fallback regional tariff matrices for offline fare estimates.",
+      "Implemented a WebSocket-based event system to dispatch assignments to active drivers instantly."
+    ],
+    projectType: "Dashboard",
+    clientName: "Neminath Travels",
+    industry: "Travel & Transport",
+    duration: "2.5 Months",
+    status: "Completed",
+    seo: {
+      metaTitle: "Neminath Travels Vehicle Booking Case Study | Dhyey Bhuva",
+      metaDescription: "Designing an end-to-end taxi reservation and driver dispatch console."
+    }
   },
   {
     title: "Monark University – Full-Stack Website with Deployment",
@@ -279,6 +377,41 @@ A complete digital presence overhaul for Monark University. The site functions a
     githubUrl: "https://github.com/DhyeyBhuva2003/monark-uni-portal",
     featured: true,
     order: 3,
+    
+    // Rich Case Study Details
+    category: "Enterprise Portal",
+    shortDescription: "A highly performant portal for Monark University, optimized for SEO, containing departments information and CMS notices.",
+    fullDescription: "A complete overhaul of Monark University's digital ecosystem. Scaled notice distribution to handle thousands of concurrent queries during admission weeks using edge caches and static compilers.",
+    thumbnail: "",
+    gallery: [
+      {
+        image: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80",
+        alt: "University Admission Homepage"
+      },
+      {
+        image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80",
+        alt: "Faculty & Curriculum Notices Page"
+      }
+    ],
+    technologies: ["Next.js", "React", "MongoDB", "PM2", "Nginx", "Tailwind CSS"],
+    features: ["Department Pages", "Notice Board CMS", "Online Admission Form", "SEO Optimization", "Event Calendar"],
+    challenges: [
+      "Maintaining high load speeds under spikes of thousands of students checking exam results simultaneously.",
+      "Ensuring search engine crawling indexability for hundreds of dynamic notice board entries."
+    ],
+    solutions: [
+      "Leveraged Next.js Incremental Static Regeneration (ISR) to compile notice pages statically, serving them from memory.",
+      "Implemented structured JSON-LD schemas and dynamic sitemap generation routes."
+    ],
+    projectType: "ERP",
+    clientName: "Monark University",
+    industry: "Higher Education",
+    duration: "4 Months",
+    status: "Completed",
+    seo: {
+      metaTitle: "Monark University Portal Case Study | Dhyey Bhuva",
+      metaDescription: "Building a high-velocity university campus website and notice database."
+    }
   },
   {
     title: "The Skyview Reality – Real Estate Showcase Website",
@@ -302,6 +435,37 @@ The Skyview Reality platform showcases high-end properties and assists buyers in
     githubUrl: "https://github.com/DhyeyBhuva2003/skyview-real-estate",
     featured: false,
     order: 4,
+    
+    // Rich Case Study Details
+    category: "Real Estate Technology",
+    shortDescription: "A luxurious listings showcase website for property listings with dynamic filters, mapping, and CRM leads.",
+    fullDescription: "A custom real estate platform for The Skyview Reality to exhibit listings. Features premium transitions, map markers, and high-fidelity image components optimization.",
+    thumbnail: "",
+    gallery: [
+      {
+        image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+        alt: "Property Detail Page"
+      }
+    ],
+    technologies: ["Next.js", "React", "MongoDB", "Framer Motion", "Cloudinary", "Tailwind CSS"],
+    features: ["Listing Filter Engine", "Virtual Property Tours", "Agent CRM Form", "High-res Image optimization", "Neighborhood Map Search"],
+    challenges: [
+      "Displaying numerous high-definition property showcase galleries without slowing down mobile page load speeds.",
+      "Providing complex filtering combinations (price ranges, rooms, location) with fast feedback."
+    ],
+    solutions: [
+      "Used Cloudinary SDK to dynamically crop, format, and serve optimized modern WebP images.",
+      "Built URL-state-driven filters with Next.js router queries for immediate static data filtering."
+    ],
+    projectType: "Portfolio",
+    clientName: "The Skyview Reality Group",
+    industry: "Real Estate",
+    duration: "1.5 Months",
+    status: "Completed",
+    seo: {
+      metaTitle: "Skyview Reality Showroom Case Study | Dhyey Bhuva",
+      metaDescription: "Building a responsive high-end property showcase using Next.js and Cloudinary."
+    }
   },
   {
     title: "Khushinamkeen – Authentic Indian Snack E‑commerce Brand",
@@ -325,6 +489,37 @@ A high-performance e-commerce store built to showcase traditional Indian snacks.
     githubUrl: "https://github.com/DhyeyBhuva2003/khushinamkeen-store",
     featured: false,
     order: 5,
+    
+    // Rich Case Study Details
+    category: "E-Commerce Store",
+    shortDescription: "A brand store for Indian snacks featuring cart operations, stripe invoices, and admin stock meters.",
+    fullDescription: "A modern direct-to-consumer store designed for regional snack catalog ordering. Leverages state syncing and transactional webhooks for a robust checkout lifecycle.",
+    thumbnail: "",
+    gallery: [
+      {
+        image: "https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=800&q=80",
+        alt: "Shop Catalogue Grid"
+      }
+    ],
+    technologies: ["Next.js", "React", "MongoDB", "Stripe", "Nodemailer", "Tailwind CSS"],
+    features: ["Responsive Product Catalog", "Persistent Shopping Cart", "Stripe Payment Gateway", "Inventory Tracking Dashboard", "Discount Coupon System"],
+    challenges: [
+      "Retaining user cart selections across tabs and page updates without creating DB sessions.",
+      "Preventing double-order creations during unstable network card payments."
+    ],
+    solutions: [
+      "Designed persistent client-side cart states backed by synchronized localStorage.",
+      "Implemented secure Stripe webhook verification before generating database transaction logs."
+    ],
+    projectType: "E-Commerce",
+    clientName: "Khushi Namkeen Co.",
+    industry: "Retail / Food & Beverage",
+    duration: "2 Months",
+    status: "Completed",
+    seo: {
+      metaTitle: "Khushi Namkeen E-Commerce Case Study | Dhyey Bhuva",
+      metaDescription: "Building a high-throughput snack ordering storefront on Next.js."
+    }
   },
   {
     title: "Lalatjyotisham – Astrology Platform with Admin Panel & Jotisma API",
@@ -348,6 +543,37 @@ Lalatjyotisham is a specialized astrology consult platform that uses coordinate-
     githubUrl: "https://github.com/DhyeyBhuva2003/lalatjyotisham-astrology",
     featured: false,
     order: 6,
+    
+    // Rich Case Study Details
+    category: "Consultancy Platform",
+    shortDescription: "An astrology platform featuring automated horoscope calculations, astrologer scheduling, and Custom Panchang APIs.",
+    fullDescription: "A specialized consulting workspace linking users to Vedic astrologers. Built-in algorithms translate location coordinates into precise planetary alignment charts on-the-fly.",
+    thumbnail: "",
+    gallery: [
+      {
+        image: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=800&q=80",
+        alt: "Zodiac Chart Calculator Dashboard"
+      }
+    ],
+    technologies: ["Next.js", "React", "MongoDB", "Astro-Computation APIs", "Tailwind CSS"],
+    features: ["Astrology Chart Generator", "Consultant Booking system", "Jotisma Panchang API", "Admin Appointment Planner", "Secure Payment Gateway"],
+    challenges: [
+      "Generating exact birth charts (Kundali) using time, longitude, and latitude coordinates on-the-fly.",
+      "Managing consultant calendars and handling scheduling collisions dynamically."
+    ],
+    solutions: [
+      "Integrated astrological calculations to translate longitude/latitude into accurate planetary alignment charts.",
+      "Designed a calendar availability algorithm with transactional locking in MongoDB to prevent double-bookings."
+    ],
+    projectType: "CRM",
+    clientName: "Lalat Jyotisham Consulting",
+    industry: "Astrology & Lifestyle",
+    duration: "3 Months",
+    status: "Completed",
+    seo: {
+      metaTitle: "Lalatjyotisham Consultation Portal Case Study | Dhyey Bhuva",
+      metaDescription: "Building a complex scheduling and astro-coordinate calculator portal."
+    }
   },
   {
     title: "Study Mitram International End‑to‑End Study Abroad & Visa Consultancy",
@@ -371,7 +597,38 @@ Study Mitram International acts as a digital bridge for students seeking study v
     githubUrl: "https://github.com/DhyeyBhuva2003/studymitram-visa-consultancy",
     featured: false,
     order: 7,
-  },
+    
+    // Rich Case Study Details
+    category: "Educational Consulting",
+    shortDescription: "An immigration portal for Study Mitram, featuring progress boards, encrypted document lockers, and advisor chat widgets.",
+    fullDescription: "A secure visa filing workspace designed for international aspirants. Visual pipelines and messaging widgets help coordinate application files between students and study advisors.",
+    thumbnail: "",
+    gallery: [
+      {
+        image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80",
+        alt: "Application Progress Locker"
+      }
+    ],
+    technologies: ["Next.js", "React", "MongoDB", "Cloudinary SDK", "Tailwind CSS"],
+    features: ["Visa Process Pipeline", "Global Course Search Finder", "Adviser Portal Chat", "Secure Document Locker", "Automatic Milestones Emailer"],
+    challenges: [
+      "Securing and organizing sensitive documentation (passports, transcripts) uploaded by students.",
+      "Providing real-time progress updates on multiple active visa processes."
+    ],
+    solutions: [
+      "Used Cloudinary private folders and signed URLs for document access, ensuring files are protected.",
+      "Designed a Kanban-style pipeline UI mapping database fields, with automated milestone emails via NodeMailer."
+    ],
+    projectType: "CRM",
+    clientName: "Study Mitram International",
+    industry: "Global Education & Immigration",
+    duration: "3.5 Months",
+    status: "Completed",
+    seo: {
+      metaTitle: "Study Mitram Visa Dashboard Case Study | Dhyey Bhuva",
+      metaDescription: "Building a secure documentation locker and consultant messaging platform."
+    }
+  }
 ];
 
 const SERVICES = [
@@ -488,6 +745,23 @@ async function main() {
       githubUrl: project.githubUrl,
       featured: project.featured,
       order: project.order,
+      
+      // Rich Case Study Fields
+      category: project.category,
+      shortDescription: project.shortDescription,
+      fullDescription: project.fullDescription,
+      thumbnail: imageUrl, // set thumbnail to the resolved image URL
+      gallery: project.gallery,
+      technologies: project.technologies,
+      features: project.features,
+      challenges: project.challenges,
+      solutions: project.solutions,
+      projectType: project.projectType,
+      clientName: project.clientName,
+      industry: project.industry,
+      duration: project.duration,
+      status: project.status || "Completed",
+      seo: project.seo,
     };
 
     await Project.updateOne({ slug: project.slug }, { $set: payload }, { upsert: true });

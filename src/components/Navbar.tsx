@@ -4,12 +4,14 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaBars, FaTimes } from "react-icons/fa";
+import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "Portfolio", href: "/portfolio" },
   { name: "Services", href: "/services" },
+  { name: "Portfolio", href: "/portfolio" },
   { name: "Blog", href: "/blog" },
+  { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
 ];
 
@@ -40,33 +42,33 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50 py-3 shadow-sm"
-          : "bg-transparent py-5"
+          ? "bg-bg-main/80 backdrop-blur-md border-b border-border-main py-3.5 shadow-sm"
+          : "bg-transparent py-6"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12 flex items-center justify-between">
         {/* Brand Logo */}
         <Link
           href="/"
-          className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white hover:opacity-90 transition flex items-center gap-1.5"
+          className="text-xl font-extrabold tracking-tight text-text-main hover:opacity-90 transition flex items-center gap-1.5"
         >
           <span>Dhyey</span>
-          <span className="text-purple-600">Bhuva</span>
-          <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse mt-1.5"></span>
+          <span className="text-brand-primary">Bhuva</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-brand-accent animate-pulse mt-1.5"></span>
         </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => {
-            const isActive = pathname === link.href;
+            const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
             return (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-sm font-medium transition duration-200 hover:text-purple-600 dark:hover:text-purple-400 ${
+                className={`text-sm font-medium transition duration-200 hover:text-brand-primary dark:hover:text-brand-accent ${
                   isActive
-                    ? "text-purple-600 dark:text-purple-400 font-semibold"
-                    : "text-zinc-600 dark:text-zinc-400"
+                    ? "text-brand-primary dark:text-brand-accent font-semibold"
+                    : "text-text-sub"
                 }`}
               >
                 {link.name}
@@ -75,43 +77,46 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* Action Button & Menu Icon */}
+        {/* Action Button & Theme Toggle */}
         <div className="flex items-center gap-4">
+          <ThemeToggle />
+          
           <Link
             href="/contact"
-            className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-full text-xs font-semibold text-white bg-purple-600 hover:bg-purple-700 transition duration-300 shadow-md shadow-purple-500/15"
+            className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-brand-primary hover:bg-brand-primary/90 hover:scale-[1.02] active:scale-[0.98] transition duration-300 shadow-lg shadow-brand-primary/10"
           >
             Hire Me
           </Link>
 
           {/* Hamburger Menu Toggle */}
           <button
+            type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-zinc-700 dark:text-zinc-300 hover:text-purple-600 dark:hover:text-purple-400 focus:outline-none transition"
+            className="md:hidden p-2.5 rounded-xl border border-border-main hover:bg-bg-sub text-text-sub hover:text-text-main focus:outline-none transition cursor-pointer"
             aria-label="Toggle menu"
           >
-            {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+            {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
           </button>
         </div>
       </div>
 
       {/* Mobile Navigation Drawer */}
       <div
-        className={`md:hidden fixed inset-0 top-[60px] bg-white dark:bg-zinc-950 z-40 transition-transform duration-300 ease-in-out border-t border-zinc-150 dark:border-zinc-900 ${
+        className={`md:hidden fixed inset-0 top-[70px] bg-bg-main z-40 transition-transform duration-300 ease-in-out border-t border-border-main ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex flex-col p-6 space-y-4">
           {navLinks.map((link) => {
-            const isActive = pathname === link.href;
+            const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
             return (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-lg font-medium py-2.5 border-b border-zinc-100 dark:border-zinc-900 transition ${
+                className={`text-lg font-medium py-3 border-b border-border-main transition ${
                   isActive
-                    ? "text-purple-600 dark:text-purple-400 font-semibold"
-                    : "text-zinc-600 dark:text-zinc-400"
+                    ? "text-brand-primary dark:text-brand-accent font-semibold"
+                    : "text-text-sub"
                 }`}
               >
                 {link.name}
@@ -120,7 +125,7 @@ export default function Navbar() {
           })}
           <Link
             href="/contact"
-            className="flex items-center justify-center w-full px-5 py-3 mt-4 rounded-xl text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 transition"
+            className="flex items-center justify-center w-full px-5 py-3.5 mt-4 rounded-xl text-sm font-bold text-white bg-brand-primary hover:bg-brand-primary/95 transition"
           >
             Get in Touch
           </Link>

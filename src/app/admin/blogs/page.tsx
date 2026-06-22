@@ -39,6 +39,8 @@ export default function AdminBlogs() {
   const [showModal, setShowModal] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [previewMode, setPreviewMode] = useState(false); // Toggle split preview
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null>(null);
 
   const {
     register,
@@ -73,9 +75,23 @@ export default function AdminBlogs() {
     fetchBlogs();
   }, []);
 
+  const closeModal = () => {
+    if (localPreviewUrl) {
+      URL.revokeObjectURL(localPreviewUrl);
+    }
+    setSelectedFile(null);
+    setLocalPreviewUrl(null);
+    setShowModal(false);
+  };
+
   const openAddModal = () => {
     setEditingId(null);
     setPreviewMode(false);
+    if (localPreviewUrl) {
+      URL.revokeObjectURL(localPreviewUrl);
+    }
+    setSelectedFile(null);
+    setLocalPreviewUrl(null);
     reset({
       title: "",
       description: "",
@@ -92,6 +108,11 @@ export default function AdminBlogs() {
   const openEditModal = (blog: Blog) => {
     setEditingId(blog._id);
     setPreviewMode(false);
+    if (localPreviewUrl) {
+      URL.revokeObjectURL(localPreviewUrl);
+    }
+    setSelectedFile(null);
+    setLocalPreviewUrl(null);
     reset({
       title: blog.title,
       description: blog.description,
@@ -105,38 +126,63 @@ export default function AdminBlogs() {
     setShowModal(true);
   };
 
-  // Image Upload Trigger
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle local image selection and preview
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("folder", "blogs");
-
-    try {
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setValue("imageUrl", data.data.url);
-        toast.success("Cover image uploaded successfully!");
-      } else {
-        toast.error(data.message || "Failed to upload cover.");
-      }
-    } catch (err) {
-      console.error("Image upload request error:", err);
-      toast.error("Network error during file upload.");
-    } finally {
-      setUploading(false);
+    // Validate size and format
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Allowed file formats: jpg, jpeg, png, webp");
+      return;
     }
+
+    const maxSizeBytes = 5 * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      toast.error("File size exceeds the maximum limit of 5MB");
+      return;
+    }
+
+    setSelectedFile(file);
+    if (localPreviewUrl) {
+      URL.revokeObjectURL(localPreviewUrl);
+    }
+    setLocalPreviewUrl(URL.createObjectURL(file));
   };
 
   const onSubmit = async (data: BlogFormInputs) => {
+    setUploading(true);
+    let finalImageUrl = data.imageUrl;
+
+    // Upload selected file first if it exists
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("folder", "blogs");
+
+      try {
+        const res = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const uploadData = await res.json();
+        if (res.ok && uploadData.success) {
+          finalImageUrl = uploadData.data.url;
+        } else {
+          toast.error(uploadData.message || "Failed to upload cover.");
+          setUploading(false);
+          return;
+        }
+      } catch (err) {
+        console.error("Image upload request error:", err);
+        toast.error("Network error during file upload.");
+        setUploading(false);
+        return;
+      }
+    }
+
     const tags = data.tagsText
       .split(",")
       .map((tag) => tag.trim())
@@ -146,7 +192,7 @@ export default function AdminBlogs() {
       title: data.title,
       description: data.description,
       content: data.content,
-      imageUrl: data.imageUrl || undefined,
+      imageUrl: finalImageUrl || undefined,
       tags,
       category: data.category,
       published: data.published,
@@ -167,7 +213,7 @@ export default function AdminBlogs() {
 
       if (res.ok && resData.success) {
         toast.success(editingId ? "Article updated successfully" : "Article published successfully");
-        setShowModal(false);
+        closeModal();
         fetchBlogs();
       } else {
         toast.error(resData.message || "Failed to save article");
@@ -175,6 +221,8 @@ export default function AdminBlogs() {
     } catch (err) {
       console.error("Save blog error:", err);
       toast.error("Network error saving blog.");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -405,30 +453,31 @@ export default function AdminBlogs() {
                 <label className="text-xs font-semibold text-zinc-555 block">Banner cover image</label>
                 <div className="flex flex-col sm:flex-row gap-4 items-start">
                   <div className="relative border border-dashed border-zinc-250 dark:border-zinc-800 hover:border-purple-500 bg-zinc-50/50 dark:bg-zinc-950 rounded-2xl w-full sm:w-48 aspect-video flex flex-col items-center justify-center gap-2 overflow-hidden text-center cursor-pointer transition">
-                    {currentImageUrl ? (
-                      <img src={currentImageUrl} alt="Preview" className="w-full h-full object-cover" />
+                    {localPreviewUrl || currentImageUrl ? (
+                      <img src={localPreviewUrl || currentImageUrl} alt="Preview" className="w-full h-full object-cover" />
                     ) : (
                       <>
                         <FaImage className="text-zinc-400 w-6 h-6" />
                         <span className="text-[10px] text-zinc-450 font-semibold px-2">
-                          {uploading ? "Uploading cover..." : "Browse banner image"}
+                          Browse banner image
                         </span>
                       </>
                     )}
                     <input
                       type="file"
                       accept=".jpg,.jpeg,.png,.webp"
-                      onChange={handleImageUpload}
+                      onChange={handleFileChange}
                       disabled={uploading}
                       className="absolute inset-0 opacity-0 cursor-pointer"
                     />
                   </div>
                   <div className="flex-1 w-full space-y-1.5">
-                    <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Image Link</span>
+                    <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Image File</span>
+                    <input type="hidden" {...register("imageUrl")} />
                     <input
                       type="text"
-                      placeholder="Upload file to generate URL"
-                      {...register("imageUrl")}
+                      placeholder="Selected file will be uploaded on save"
+                      value={selectedFile ? `Local: ${selectedFile.name}` : currentImageUrl || ""}
                       className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 text-xs focus:outline-none"
                       readOnly
                     />
@@ -453,7 +502,7 @@ export default function AdminBlogs() {
               <div className="flex gap-3 justify-end pt-4 border-t border-zinc-100 dark:border-zinc-850">
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  onClick={closeModal}
                   className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold hover:bg-zinc-55/10 dark:hover:bg-zinc-950 transition text-zinc-700 dark:text-zinc-300"
                 >
                   Cancel
@@ -463,7 +512,7 @@ export default function AdminBlogs() {
                   disabled={uploading}
                   className="px-5 py-2.5 rounded-xl bg-purple-600 text-white font-semibold text-xs hover:bg-purple-700 disabled:bg-purple-400 transition"
                 >
-                  Save Article
+                  {uploading ? "Saving..." : "Save Article"}
                 </button>
               </div>
             </form>

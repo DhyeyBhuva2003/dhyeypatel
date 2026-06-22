@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "sonner";
-import { FaPaperPlane, FaEnvelope, FaMapMarkerAlt, FaClock, FaLinkedin, FaGithub } from "react-icons/fa";
+import { FaPaperPlane, FaEnvelope, FaMapMarkerAlt, FaClock, FaLinkedin, FaGithub, FaPhoneAlt } from "react-icons/fa";
 
 interface ContactFormInputs {
   name: string;
@@ -75,7 +75,7 @@ export default function Contact() {
               Connect With Me
             </h2>
             <p className="text-sm text-zinc-500 dark:text-zinc-450 leading-relaxed">
-              If you prefer traditional mail channels or want to check out my professional credentials, feel free to use the reference details below.
+              If you prefer traditional channels or want to check out my professional credentials, feel free to use the reference details below.
             </p>
             
             {/* Cards */}
@@ -85,10 +85,23 @@ export default function Contact() {
                 <div className="space-y-0.5">
                   <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">Email</h4>
                   <a
-                    href="mailto:inquiry@dhyeybhuva.com"
+                    href="mailto:dhyeybhuva2003@gmail.com"
                     className="text-sm text-zinc-700 dark:text-zinc-300 font-medium hover:underline hover:text-purple-600"
                   >
-                    inquiry@dhyeybhuva.com
+                    dhyeybhuva2003@gmail.com
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/30">
+                <FaPhoneAlt className="w-5 h-5 text-purple-600 shrink-0 mt-1" />
+                <div className="space-y-0.5">
+                  <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">Phone</h4>
+                  <a
+                    href="tel:+916355830394"
+                    className="text-sm text-zinc-700 dark:text-zinc-300 font-medium hover:underline hover:text-purple-600"
+                  >
+                    +91 6355830394
                   </a>
                 </div>
               </div>
@@ -98,7 +111,7 @@ export default function Contact() {
                 <div className="space-y-0.5">
                   <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">Location</h4>
                   <p className="text-sm text-zinc-700 dark:text-zinc-300 font-medium">
-                    Gujarat, India (Remote Available Globally)
+                    Ahmedabad, Gujarat, India (Remote Available Globally)
                   </p>
                 </div>
               </div>
@@ -122,7 +135,7 @@ export default function Contact() {
             </h3>
             <div className="flex gap-4">
               <a
-                href="https://www.linkedin.com/in/dhyeybhuva/"
+                href="https://linkedin.com/in/dhyeybhuva/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition"
@@ -130,7 +143,7 @@ export default function Contact() {
                 <FaLinkedin className="text-[#0077b5]" /> LinkedIn
               </a>
               <a
-                href="https://github.com/DhyeyBhuva2003"
+                href="https://github.com/dhyeybhuva2003"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition"

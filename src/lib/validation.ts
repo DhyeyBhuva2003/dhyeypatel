@@ -17,6 +17,31 @@ export const projectSchema = z.object({
   githubUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   featured: z.boolean().default(false),
   order: z.number().default(0),
+  
+  // Rich Case Study Fields
+  category: z.string().optional().or(z.literal("")),
+  shortDescription: z.string().optional().or(z.literal("")),
+  fullDescription: z.string().optional().or(z.literal("")),
+  thumbnail: z.string().optional().or(z.literal("")),
+  gallery: z.array(
+    z.object({
+      image: z.string(),
+      alt: z.string(),
+    })
+  ).default([]),
+  technologies: z.array(z.string()).default([]),
+  features: z.array(z.string()).default([]),
+  challenges: z.array(z.string()).default([]),
+  solutions: z.array(z.string()).default([]),
+  projectType: z.string().optional().or(z.literal("")),
+  clientName: z.string().optional().or(z.literal("")),
+  industry: z.string().optional().or(z.literal("")),
+  duration: z.string().optional().or(z.literal("")),
+  status: z.enum(["Completed", "In Progress"]).default("Completed"),
+  seo: z.object({
+    metaTitle: z.string().optional().or(z.literal("")),
+    metaDescription: z.string().optional().or(z.literal("")),
+  }).optional().default({}),
 });
 
 // Service Validation Schema
