@@ -3,9 +3,11 @@ import path from "path";
 import mongoose from "mongoose";
 import { v2 as cloudinary } from "cloudinary";
 import bcrypt from "bcryptjs";
+import dns from "dns";
+
 
 function loadDotenv() {
-  const envPath = path.join(process.cwd(), ".env.local");
+  const envPath = path.join(process.cwd(), ".env");
   if (!fs.existsSync(envPath)) return;
 
   const envContent = fs.readFileSync(envPath, "utf8");
@@ -114,7 +116,7 @@ function findLocalImageForSlug(slug) {
 
 loadDotenv();
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/dhyeypatel";
+const MONGODB_URI = process.env.MONGODB_URI
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@dhyeybhuva.com";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "adminpassword123";
 const TEMP_IMAGES_DIR = path.join(process.cwd(), "scripts", "temp-images");
@@ -171,7 +173,7 @@ const ProjectSchema = new mongoose.Schema(
     githubUrl: { type: String },
     featured: { type: Boolean, default: false },
     order: { type: Number, default: 0 },
-    
+
     // Rich Case Study Fields
     category: { type: String },
     shortDescription: { type: String },
@@ -261,7 +263,7 @@ This full-stack educational system was engineered to streamline course registrat
     githubUrl: "https://github.com/DhyeyBhuva2003/usi3d-platform",
     featured: true,
     order: 1,
-    
+
     // Rich Case Study Details
     category: "Educational Technology",
     shortDescription: "A comprehensive learning portal with course lists, dashboard profiles, Three.js CAD viewers, and billing systems.",
@@ -319,7 +321,7 @@ A custom logistic dashboard built to manage traveler bookings, driver allocation
     githubUrl: "https://github.com/DhyeyBhuva2003/neminath-booking-system",
     featured: true,
     order: 2,
-    
+
     // Rich Case Study Details
     category: "Logistics & Transport",
     shortDescription: "An automated passenger vehicle booking engine, maps routing, live dispatch boards, and fleet billing sheets.",
@@ -377,7 +379,7 @@ A complete digital presence overhaul for Monark University. The site functions a
     githubUrl: "https://github.com/DhyeyBhuva2003/monark-uni-portal",
     featured: true,
     order: 3,
-    
+
     // Rich Case Study Details
     category: "Enterprise Portal",
     shortDescription: "A highly performant portal for Monark University, optimized for SEO, containing departments information and CMS notices.",
@@ -435,7 +437,7 @@ The Skyview Reality platform showcases high-end properties and assists buyers in
     githubUrl: "https://github.com/DhyeyBhuva2003/skyview-real-estate",
     featured: false,
     order: 4,
-    
+
     // Rich Case Study Details
     category: "Real Estate Technology",
     shortDescription: "A luxurious listings showcase website for property listings with dynamic filters, mapping, and CRM leads.",
@@ -489,7 +491,7 @@ A high-performance e-commerce store built to showcase traditional Indian snacks.
     githubUrl: "https://github.com/DhyeyBhuva2003/khushinamkeen-store",
     featured: false,
     order: 5,
-    
+
     // Rich Case Study Details
     category: "E-Commerce Store",
     shortDescription: "A brand store for Indian snacks featuring cart operations, stripe invoices, and admin stock meters.",
@@ -543,7 +545,7 @@ Lalatjyotisham is a specialized astrology consult platform that uses coordinate-
     githubUrl: "https://github.com/DhyeyBhuva2003/lalatjyotisham-astrology",
     featured: false,
     order: 6,
-    
+
     // Rich Case Study Details
     category: "Consultancy Platform",
     shortDescription: "An astrology platform featuring automated horoscope calculations, astrologer scheduling, and Custom Panchang APIs.",
@@ -597,7 +599,7 @@ Study Mitram International acts as a digital bridge for students seeking study v
     githubUrl: "https://github.com/DhyeyBhuva2003/studymitram-visa-consultancy",
     featured: false,
     order: 7,
-    
+
     // Rich Case Study Details
     category: "Educational Consulting",
     shortDescription: "An immigration portal for Study Mitram, featuring progress boards, encrypted document lockers, and advisor chat widgets.",
@@ -686,8 +688,19 @@ async function main() {
   console.log("Starting unified seed script...");
   console.log("Connecting to MongoDB:", MONGODB_URI);
 
-  await mongoose.connect(MONGODB_URI);
+  try {
+    await mongoose.connect(MONGODB_URI);
+  } catch (error) {
+    if (error.code === "ECONNREFUSED" || error.syscall === "querySrv") {
+      console.warn("MongoDB connection failed due to DNS querySrv error. Retrying with fallback DNS servers (8.8.8.8, 1.1.1.1)...");
+      dns.setServers(["8.8.8.8", "1.1.1.1"]);
+      await mongoose.connect(MONGODB_URI);
+    } else {
+      throw error;
+    }
+  }
   console.log("MongoDB connected.");
+
 
   const existingAdmin = await User.findOne({ role: "ADMIN" });
   if (!existingAdmin) {
@@ -745,7 +758,7 @@ async function main() {
       githubUrl: project.githubUrl,
       featured: project.featured,
       order: project.order,
-      
+
       // Rich Case Study Fields
       category: project.category,
       shortDescription: project.shortDescription,
@@ -781,7 +794,8 @@ async function main() {
   for (const blog of blogs) {
     await Blog.updateOne(
       { slug: blog.slug },
-      { $set: {
+      {
+        $set: {
           title: blog.title,
           description: blog.description,
           content: blog.content,
@@ -791,7 +805,8 @@ async function main() {
           published: blog.published,
           publishedAt: blog.publishedAt,
           readTime: blog.readTime,
-        } },
+        }
+      },
       { upsert: true }
     );
     blogCount++;
