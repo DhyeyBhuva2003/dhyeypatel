@@ -176,18 +176,19 @@ export default async function Home() {
           <div className="relative flex items-center justify-center h-[560px] lg:h-[640px]">
 
             {/* Large glowing orb behind person */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-72 h-72 lg:w-80 lg:h-80 rounded-full bg-gradient-to-b from-blue-600/20 via-brand-primary/10 to-transparent blur-[2px] shadow-[0_0_80px_30px_rgba(59,130,246,0.08)]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-80 h-80 lg:w-[420px] lg:h-[420px] rounded-full bg-gradient-to-b from-[#005eff] via-[#00259e] to-[#000b2b] blur-[2px] shadow-[0_0_140px_50px_rgba(0,94,255,0.5)]" />
             {/* Orbital ellipse ring */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[52%] w-[360px] h-[240px] lg:w-[420px] lg:h-[280px] rounded-full border border-blue-400/8 rotate-[15deg]" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[52%] w-[340px] h-[220px] lg:w-[400px] lg:h-[260px] rounded-full border border-brand-primary/5 -rotate-[5deg]" />
-            {/* Orbital dot */}
-            <div className="absolute top-[22%] left-[58%] w-3 h-3 rounded-full bg-blue-400/60 shadow-[0_0_10px_4px_rgba(96,165,250,0.3)] animate-pulse" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[52%] w-[360px] h-[240px] lg:w-[420px] lg:h-[280px] rounded-full border border-blue-400/25 shadow-[0_0_15px_rgba(96,165,250,0.1)] rotate-[15deg]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[52%] w-[340px] h-[220px] lg:w-[400px] lg:h-[260px] rounded-full border border-blue-500/15 shadow-[0_0_12px_rgba(59,130,246,0.08)] -rotate-[5deg]" />
+            {/* Orbital dots */}
+            <div className="absolute top-[48%] left-[23%] lg:left-[21%] w-2.5 h-2.5 rounded-full bg-blue-300 shadow-[0_0_12px_5px_rgba(96,165,250,0.5)] animate-pulse" />
+            <div className="absolute top-[38%] right-[22%] lg:right-[20%] w-2 h-2 rounded-full bg-blue-300 shadow-[0_0_10px_4px_rgba(96,165,250,0.4)] animate-pulse" />
 
             {/* Person image — natural, no circle clip */}
             <FadeIn direction="up" delay={0.25}>
-              <div className="relative z-10 h-[420px] lg:h-[480px] w-[280px] lg:w-[320px]">
+              <div className="relative z-10 h-[420px] lg:h-[520px] w-[280px] lg:w-[400px]">
                 <Image
-                  src="/1763815560550-removebg-preview.png"
+                  src="/DhyeyFinal.png"
                   alt="Dhyey Bhuva"
                   fill
                   priority
