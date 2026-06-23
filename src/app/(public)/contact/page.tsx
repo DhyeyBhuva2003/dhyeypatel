@@ -77,7 +77,7 @@ export default function Contact() {
             <p className="text-sm text-zinc-500 dark:text-zinc-450 leading-relaxed">
               If you prefer traditional channels or want to check out my professional credentials, feel free to use the reference details below.
             </p>
-            
+
             {/* Cards */}
             <div className="space-y-4">
               <div className="flex items-start gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/30">
@@ -116,7 +116,7 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/30">
+              {/* <div className="flex items-start gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/30">
                 <FaClock className="w-5 h-5 text-purple-600 shrink-0 mt-1" />
                 <div className="space-y-0.5">
                   <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">Average Response Time</h4>
@@ -124,7 +124,7 @@ export default function Contact() {
                     Within 24 Hours
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -191,9 +191,8 @@ export default function Contact() {
                         required: "Name is required",
                         minLength: { value: 2, message: "Name must be at least 2 characters" },
                       })}
-                      className={`w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-zinc-900 text-sm text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650 ${
-                        errors.name ? "border-red-500 focus:border-red-500" : "border-zinc-200 dark:border-zinc-800"
-                      }`}
+                      className={`w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-zinc-900 text-sm text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650 ${errors.name ? "border-red-500 focus:border-red-500" : "border-zinc-200 dark:border-zinc-800"
+                        }`}
                     />
                     {errors.name && (
                       <p className="text-[10px] text-red-500 font-semibold">{errors.name.message}</p>
@@ -216,9 +215,8 @@ export default function Contact() {
                           message: "Invalid email address",
                         },
                       })}
-                      className={`w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-zinc-900 text-sm text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650 ${
-                        errors.email ? "border-red-500 focus:border-red-500" : "border-zinc-200 dark:border-zinc-800"
-                      }`}
+                      className={`w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-zinc-900 text-sm text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650 ${errors.email ? "border-red-500 focus:border-red-500" : "border-zinc-200 dark:border-zinc-800"
+                        }`}
                     />
                     {errors.email && (
                       <p className="text-[10px] text-red-500 font-semibold">{errors.email.message}</p>
@@ -253,9 +251,8 @@ export default function Contact() {
                       required: "Message content is required",
                       minLength: { value: 10, message: "Message must be at least 10 characters" },
                     })}
-                    className={`w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-zinc-900 text-sm text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650 resize-y ${
-                      errors.message ? "border-red-500 focus:border-red-500" : "border-zinc-200 dark:border-zinc-800"
-                    }`}
+                    className={`w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-zinc-900 text-sm text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650 resize-y ${errors.message ? "border-red-500 focus:border-red-500" : "border-zinc-200 dark:border-zinc-800"
+                      }`}
                   ></textarea>
                   {errors.message && (
                     <p className="text-[10px] text-red-500 font-semibold">{errors.message.message}</p>
