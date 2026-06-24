@@ -1,355 +1,347 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { toast, Toaster } from "sonner";
-import { FaTrash, FaEdit, FaPlus, FaCode, FaRocket, FaServer, FaDatabase } from "react-icons/fa";
+import React, { useState, useMemo } from "react";
+import { useForm, FormProvider, Resolver } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { ConciergeBell, Plus, X, Code, Rocket, Server, Database } from "lucide-react";
+import { Toaster } from "sonner";
 
-interface Service {
-  _id: string;
-  title: string;
-  description: string;
-  icon: string;
-  features: string[];
-  price: string;
-  order: number;
-}
+import { useServices, useCreateService, useUpdateService, useDeleteService } from "@/hooks/useServices";
+import { DataGrid, DataGridColumn } from "@/components/datagrid/DataGrid";
+import { Service } from "@/types";
+import DataGridToolbar from "@/components/datagrid/DataGridToolbar";
+import DataGridRowActions from "@/components/datagrid/DataGridRowActions";
+import FormInput from "@/components/forms/FormInput";
+import FormTextarea from "@/components/forms/FormTextarea";
+import FormSelect from "@/components/forms/FormSelect";
+import Portal from "@/components/ui/Portal";
 
-interface ServiceFormInputs {
-  title: string;
-  description: string;
-  icon: string;
-  featuresText: string; // One feature per line
-  price: string;
-  order: number;
-}
+const serviceFormSchema = z.object({
+  title: z.string().min(1, "Title is required").trim(),
+  description: z.string().min(1, "Description is required").trim(),
+  icon: z.string().min(1, "Icon name is required"),
+  price: z.string().min(1, "Price is required").trim(),
+  order: z.coerce.number().default(0),
+  featuresText: z.string().optional().or(z.literal("")),
+});
 
-function getIconComponent(iconName: string) {
+type ServiceFormData = z.infer<typeof serviceFormSchema>;
+
+function getIcon(iconName: string) {
   switch (iconName) {
     case "FaCode":
-      return <FaCode className="w-5 h-5 text-purple-650" />;
+    case "Code":
+      return <Code className="w-4 h-4 text-brand-primary" />;
     case "FaRocket":
-      return <FaRocket className="w-5 h-5 text-purple-650" />;
+    case "Rocket":
+      return <Rocket className="w-4 h-4 text-brand-primary" />;
     case "FaServer":
-      return <FaServer className="w-5 h-5 text-purple-650" />;
+    case "Server":
+      return <Server className="w-4 h-4 text-brand-primary" />;
     default:
-      return <FaDatabase className="w-5 h-5 text-purple-650" />;
+      return <Database className="w-4 h-4 text-brand-primary" />;
   }
 }
 
 export default function AdminServices() {
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [visibleKeys, setVisibleKeys] = useState<string[]>([
+    "title",
+    "price",
+    "order",
+    "featuresCount",
+    "actions",
+  ]);
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm<ServiceFormInputs>();
+  // Hook integrations
+  const { data: services = [], loading, error, refetch } = useServices([isFormOpen]);
 
-  const fetchServices = async () => {
-    try {
-      const res = await fetch("/api/services");
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setServices(data.data);
-      } else {
-        toast.error("Failed to load services");
-      }
-    } catch (err) {
-      console.error("Fetch services error:", err);
-      toast.error("Network error fetching services.");
-    } finally {
-      setLoading(false);
+  const createMutation = useCreateService(() => {
+    setIsFormOpen(false);
+    refetch();
+  });
+
+  const updateMutation = useUpdateService(() => {
+    setIsFormOpen(false);
+    setEditingId(null);
+    refetch();
+  });
+
+  const deleteMutation = useDeleteService(() => {
+    refetch();
+  });
+
+  const formMethods = useForm<ServiceFormData>({
+    resolver: zodResolver(serviceFormSchema) as unknown as Resolver<ServiceFormData>,
+  });
+
+  const handleOpenCreate = () => {
+    setEditingId(null);
+    formMethods.reset({
+      title: "",
+      description: "",
+      icon: "Code",
+      price: "",
+      order: 0,
+      featuresText: "",
+    });
+    setIsFormOpen(true);
+  };
+
+  const handleOpenEdit = (service: Service) => {
+    setEditingId(service._id);
+    formMethods.reset({
+      title: service.title,
+      description: service.description,
+      icon: service.icon || "Code",
+      price: service.price ? String(service.price) : "",
+      order: service.order || 0,
+      featuresText: (service.features || []).join("\n"),
+    });
+    setIsFormOpen(true);
+  };
+
+  const handleDelete = (service: Service) => {
+    if (confirm(`Are you sure you want to delete service tier: ${service.title}?`)) {
+      deleteMutation.mutate(service._id);
     }
   };
 
-  useEffect(() => {
-    fetchServices();
-  }, []);
-
-  const openAddModal = () => {
-    setEditingId(null);
-    reset({
-      title: "",
-      description: "",
-      icon: "FaCode",
-      featuresText: "",
-      price: "",
-      order: 0,
-    });
-    setShowModal(true);
-  };
-
-  const openEditModal = (service: Service) => {
-    setEditingId(service._id);
-    reset({
-      title: service.title,
-      description: service.description,
-      icon: service.icon,
-      featuresText: service.features.join("\n"),
-      price: service.price,
-      order: service.order,
-    });
-    setShowModal(true);
-  };
-
-  const onSubmit = async (data: ServiceFormInputs) => {
-    // Parse features text line by line
-    const features = data.featuresText
-      .split(/\r?\n/)
-      .map((line) => line.trim())
+  const handleFormSubmit = async (values: ServiceFormData) => {
+    const features = (values.featuresText || "")
+      .split("\n")
+      .map((item) => item.trim())
       .filter(Boolean);
 
     const payload = {
-      title: data.title,
-      description: data.description,
-      icon: data.icon,
+      title: values.title,
+      description: values.description,
+      icon: values.icon,
+      price: values.price,
+      order: Number(values.order),
       features,
-      price: data.price,
-      order: Number(data.order),
     };
 
-    const url = editingId ? `/api/services/${editingId}` : "/api/services";
-    const method = editingId ? "PUT" : "POST";
-
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const resData = await res.json();
-
-      if (res.ok && resData.success) {
-        toast.success(editingId ? "Service updated successfully" : "Service created successfully");
-        setShowModal(false);
-        fetchServices();
-      } else {
-        toast.error(resData.message || "Failed to save service");
-      }
-    } catch (err) {
-      console.error("Save service error:", err);
-      toast.error("Network error saving service.");
+    if (editingId) {
+      updateMutation.mutate({ id: editingId, data: payload });
+    } else {
+      createMutation.mutate(payload);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this service tier?")) return;
+  const filteredServices = useMemo(() => {
+    return services.filter((s) => s.title.toLowerCase().includes(search.toLowerCase()));
+  }, [services, search]);
 
-    try {
-      const res = await fetch(`/api/services/${id}`, { method: "DELETE" });
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        toast.success("Service deleted.");
-        setServices((prev) => prev.filter((s) => s._id !== id));
-      } else {
-        toast.error("Failed to delete service.");
-      }
-    } catch (err) {
-      console.error("Delete service error:", err);
-      toast.error("Network error deleting service.");
-    }
-  };
+  const columns = useMemo<DataGridColumn<Service>[]>(
+    () => [
+      {
+        key: "title",
+        label: "Service tier",
+        render: (row) => (
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center border border-indigo-100 dark:border-indigo-900/30">
+              {getIcon(row.icon)}
+            </div>
+            <div className="flex flex-col leading-tight select-none">
+              <span className="font-bold text-zinc-900 dark:text-white text-xs">{row.title}</span>
+              <span className="text-[10px] text-zinc-450 dark:text-zinc-550 font-semibold mt-0.5 truncate max-w-[280px]">
+                {row.description}
+              </span>
+            </div>
+          </div>
+        ),
+      },
+      {
+        key: "price",
+        label: "Pricing Rate",
+        render: (row) => (
+          <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold">
+            {row.price}
+          </span>
+        ),
+      },
+      {
+        key: "order",
+        label: "Sort Order",
+        render: (row) => <span className="font-mono text-zinc-450 text-xs">{row.order || 0}</span>,
+      },
+      {
+        key: "featuresCount",
+        label: "Scope Features",
+        render: (row) => (
+          <span className="text-[10px] font-bold text-zinc-450 dark:text-zinc-500 uppercase tracking-wider">
+            {(row.features || []).length} items defined
+          </span>
+        ),
+      },
+      {
+        key: "actions",
+        label: "Actions",
+        className: "text-right",
+        render: (row) => (
+          <DataGridRowActions onEdit={() => handleOpenEdit(row)} onDelete={() => handleDelete(row)} />
+        ),
+      },
+    ],
+    [handleDelete, handleOpenEdit]
+  );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeIn select-none">
       <Toaster position="top-right" richColors />
 
       {/* Header */}
-      <div className="flex justify-between items-center pb-4 border-b border-zinc-200 dark:border-zinc-850">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-zinc-200 dark:border-zinc-850 pb-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
-            Service Management
+          <h1 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <ConciergeBell className="text-brand-primary w-7 h-7" />
+            <span>Service Tiers</span>
           </h1>
-          <p className="text-sm text-zinc-500">
-            Define structural capabilities, prices, and scope features.
+          <p className="text-xs font-semibold text-zinc-450 dark:text-zinc-550 mt-1">
+            Configure available package tiers, pricing estimates, and features deliverables.
           </p>
         </div>
+
         <button
-          onClick={openAddModal}
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-purple-600 hover:bg-purple-700 transition shadow-sm"
+          onClick={handleOpenCreate}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-primary hover:bg-primary-hover text-white text-xs font-bold transition shadow-md shadow-brand-primary/10 cursor-pointer"
         >
-          <FaPlus size={11} /> Add Service Tier
+          <Plus className="w-4 h-4" />
+          <span>Add Service</span>
         </button>
       </div>
 
-      {/* Grid Content */}
-      {loading ? (
-        <div className="py-20 text-center flex flex-col items-center justify-center gap-3">
-          <span className="w-8 h-8 rounded-full border-4 border-purple-600 border-t-transparent animate-spin"></span>
-          <span className="text-xs text-zinc-400">Syncing services...</span>
-        </div>
-      ) : services.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-850 text-zinc-450 text-sm">
-          No services defined. Create one to populate your listings.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service) => (
-            <div
-              key={service._id}
-              className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-850 shadow-sm hover:shadow-md transition flex flex-col justify-between"
-            >
-              <div className="space-y-4">
-                <div className="flex justify-between items-start">
-                  <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 flex items-center justify-center border border-purple-100 dark:border-purple-900/30">
-                    {getIconComponent(service.icon)}
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => openEditModal(service)}
-                      className="p-2 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:text-purple-600 hover:border-purple-500/20 transition text-xs"
-                      title="Edit Service"
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(service._id)}
-                      className="p-2 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-500 hover:text-red-650 hover:border-red-500/20 transition text-xs"
-                      title="Delete Service"
-                    >
-                      <FaTrash />
-                    </button>
-                  </div>
-                </div>
+      {/* Toolbar */}
+      <DataGridToolbar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search service tier name..."
+        columns={columns}
+        visibleKeys={visibleKeys}
+        onVisibleKeysChange={setVisibleKeys}
+        data={filteredServices}
+        exportFilename="services_export"
+      />
 
-                <div className="space-y-1">
-                  <h3 className="font-bold text-zinc-900 dark:text-white text-base">
-                    {service.title}
-                  </h3>
-                  <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
-                    Order: {service.order} | Price: {service.price}
-                  </div>
-                </div>
+      {/* Grid Table */}
+      <DataGrid
+        columns={columns}
+        data={filteredServices}
+        loading={loading}
+        error={error}
+        emptyMessage="No freelance service tiers configured."
+        visibleKeys={visibleKeys}
+      />
 
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed line-clamp-3">
-                  {service.description}
+      {/* CREATE/EDIT DRAWER */}
+      {isFormOpen && (
+        <Portal>
+          <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm animate-fadeIn">
+          {/* Overlay Click Target to Close */}
+          <div className="absolute inset-0" onClick={() => setIsFormOpen(false)} />
+          
+          <div className="relative w-full max-w-md h-full bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col justify-between animate-slideInRight z-10">
+            {/* Drawer Header */}
+            <div className="sticky top-0 bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 px-6 py-4 flex justify-between items-center z-25">
+              <div>
+                <h3 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-wider">
+                  {editingId ? "Modify Service Package" : "Create Service Package"}
+                </h3>
+                <p className="text-[10px] font-bold text-zinc-450 dark:text-zinc-500 mt-0.5 leading-none">
+                  Define service pricing deliverables and descriptions.
                 </p>
-
-                <ul className="space-y-1.5 pt-3 border-t border-zinc-100 dark:border-zinc-850">
-                  {service.features.map((feat, idx) => (
-                    <li key={idx} className="text-[10px] text-zinc-450 dark:text-zinc-400 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0"></span>
-                      <span className="line-clamp-1">{feat}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
+              <button
+                type="button"
+                onClick={() => setIsFormOpen(false)}
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850 cursor-pointer"
+              >
+                <X className="w-4.5 h-4.5" />
+              </button>
             </div>
-          ))}
-        </div>
-      )}
 
-      {/* Add/Edit Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-xl p-8 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-850 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
-              {editingId ? "Modify Service Tier" : "Create Service Tier"}
-            </h2>
+            {/* Drawer Scrollable Content */}
+            <FormProvider {...formMethods}>
+              <form onSubmit={formMethods.handleSubmit(handleFormSubmit)} className="flex-1 flex flex-col justify-between overflow-hidden">
+                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 scrollbar-thin">
+                  
+                  {/* Card Section: Basic Info */}
+                  <div className="p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                    <h4 className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">Basic Tier Specifications</h4>
+                    <div className="space-y-4">
+                      <FormInput name="title" label="Service Title" placeholder="Mobile Development" required />
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormInput
+                          name="icon"
+                          label="Display Icon name"
+                          placeholder="Code, Rocket, Server, FaCode..."
+                          required
+                        />
+                        <FormInput name="price" label="Pricing Estimate" placeholder="Starting at $2,000" required />
+                      </div>
+                    </div>
+                  </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* Title */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-zinc-550">Service Title</label>
-                <input
-                  type="text"
-                  placeholder="Full-Stack Web Development"
-                  {...register("title", { required: "Title is required" })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650"
-                />
-              </div>
+                  {/* Card Section: Order priority */}
+                  <div className="p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                    <h4 className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">Ranking Position</h4>
+                    <FormInput name="order" type="number" label="Display Order priority" placeholder="0" />
+                  </div>
 
-              {/* Description */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-zinc-550">Description</label>
-                <textarea
-                  rows={3}
-                  placeholder="End-to-end custom application development..."
-                  {...register("description", { required: "Description is required" })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650 resize-y"
-                ></textarea>
-              </div>
+                  {/* Card Section: Description */}
+                  <div className="p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                    <h4 className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">Pitch & deliverables</h4>
+                    <div className="space-y-4">
+                      <FormTextarea 
+                        name="description" 
+                        label="Elevator Description" 
+                        placeholder="Explain value proposition..." 
+                        required 
+                        autoResize={true}
+                      />
+                      <FormTextarea 
+                        name="featuresText" 
+                        label="Scope Deliverables (one per line)" 
+                        placeholder="iOS App Development&#10;App Store Deploy&#10;Push Notifications" 
+                        rows={5}
+                        autoResize={true}
+                      />
+                    </div>
+                  </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                {/* Icon Selection */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-zinc-550">Display Icon</label>
-                  <select
-                    {...register("icon", { required: "Icon is required" })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650"
+                </div>
+
+                {/* Sticky Drawer Footer */}
+                <div className="sticky bottom-0 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-150 dark:border-zinc-800 px-6 py-4 flex gap-3 justify-end z-25">
+                  <button
+                    type="button"
+                    onClick={() => setIsFormOpen(false)}
+                    className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold hover:bg-zinc-100 dark:hover:bg-zinc-900 transition text-zinc-700 dark:text-zinc-350 cursor-pointer"
                   >
-                    <option value="FaCode">Code Editor (FaCode)</option>
-                    <option value="FaRocket">Rocket Start (FaRocket)</option>
-                    <option value="FaServer">Server Stack (FaServer)</option>
-                    <option value="FaDatabase">Database Storage (FaDatabase)</option>
-                  </select>
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={createMutation.loading || updateMutation.loading}
+                    className="px-5 py-2.5 rounded-xl bg-brand-primary text-white font-bold text-xs hover:bg-primary-hover transition cursor-pointer disabled:opacity-60 flex items-center justify-center min-w-[100px]"
+                  >
+                    {createMutation.loading || updateMutation.loading ? (
+                      <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    ) : (
+                      "Save Service"
+                    )}
+                  </button>
                 </div>
-
-                {/* Price */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-zinc-550">Pricing Text</label>
-                  <input
-                    type="text"
-                    placeholder="$1,500+"
-                    {...register("price", { required: "Price is required" })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                {/* Order */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-zinc-550">Sort Order</label>
-                  <input
-                    type="number"
-                    defaultValue={0}
-                    {...register("order", { valueAsNumber: true })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650"
-                  />
-                </div>
-              </div>
-
-              {/* Features (one per line) */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-zinc-550">
-                  Scope Features (One item per line)
-                </label>
-                <textarea
-                  rows={4}
-                  placeholder="Next.js Frontend&#10;Node.js Backend API&#10;MongoDB Database Design"
-                  {...register("featuresText")}
-                  className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-950 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600/10 focus:border-purple-650 resize-y"
-                ></textarea>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-3 justify-end pt-4 border-t border-zinc-100 dark:border-zinc-850">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-950 transition text-zinc-700 dark:text-zinc-300"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-purple-600 text-white font-semibold text-xs hover:bg-purple-700 transition"
-                >
-                  Save Service
-                </button>
-              </div>
-            </form>
+              </form>
+            </FormProvider>
           </div>
         </div>
+        </Portal>
       )}
     </div>
   );

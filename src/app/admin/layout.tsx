@@ -3,17 +3,17 @@ import Link from "next/link";
 import { getCurrentAdmin } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import {
-  FaChartLine,
-  FaFolder,
-  FaConciergeBell,
-  FaPenSquare,
-  FaInbox,
-  FaCog,
-  FaUserShield,
-  FaUsers,
-} from "react-icons/fa";
+  BarChart3,
+  Users,
+  Folder,
+  ConciergeBell,
+  FileText,
+  Inbox,
+  Settings,
+} from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
 import UserAvatar from "@/components/admin/UserAvatar";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -22,13 +22,13 @@ interface AdminLayoutProps {
 }
 
 const menuItems = [
-  { name: "Overview", href: "/admin", icon: <FaChartLine /> },
-  { name: "Users", href: "/admin/users", icon: <FaUsers /> },
-  { name: "Projects", href: "/admin/projects", icon: <FaFolder /> },
-  { name: "Services", href: "/admin/services", icon: <FaConciergeBell /> },
-  { name: "Blogs", href: "/admin/blogs", icon: <FaPenSquare /> },
-  { name: "Inquiries", href: "/admin/inquiries", icon: <FaInbox /> },
-  { name: "Settings", href: "/admin/settings", icon: <FaCog /> },
+  { name: "Overview", href: "/admin", icon: <BarChart3 className="w-4 h-4" /> },
+  { name: "Users", href: "/admin/users", icon: <Users className="w-4 h-4" /> },
+  { name: "Projects", href: "/admin/projects", icon: <Folder className="w-4 h-4" /> },
+  { name: "Services", href: "/admin/services", icon: <ConciergeBell className="w-4 h-4" /> },
+  { name: "Blogs", href: "/admin/blogs", icon: <FileText className="w-4 h-4" /> },
+  { name: "Inquiries", href: "/admin/inquiries", icon: <Inbox className="w-4 h-4" /> },
+  { name: "Settings", href: "/admin/settings", icon: <Settings className="w-4 h-4" /> },
 ];
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
@@ -39,7 +39,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-55/20 dark:bg-black flex flex-col md:flex-row">
+    <div className="min-h-screen bg-zinc-50 dark:bg-black flex flex-col md:flex-row select-none">
       {/* 1. Sidebar Navigation */}
       <aside className="w-full md:w-64 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-zinc-850 bg-white dark:bg-zinc-900 flex flex-col justify-between shrink-0">
         <div className="p-6 space-y-8">
@@ -50,11 +50,11 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
               imageUrl={admin.profileImage?.secure_url}
               size="md"
             />
-            <div>
-              <h2 className="font-extrabold text-zinc-900 dark:text-white text-sm tracking-tight leading-none">
+            <div className="leading-none">
+              <h2 className="font-black text-zinc-900 dark:text-white text-sm tracking-tight">
                 Admin Panel
               </h2>
-              <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider">
+              <span className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider mt-1 block">
                 {admin.name}
               </span>
             </div>
@@ -66,17 +66,21 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
               <Link
                 key={item.name}
                 href={item.href}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-950 hover:text-purple-650 dark:hover:text-purple-400 transition"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-zinc-550 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-950 hover:text-brand-primary dark:hover:text-white transition"
               >
-                <span className="text-sm shrink-0">{item.icon}</span>
+                <span className="shrink-0">{item.icon}</span>
                 <span>{item.name}</span>
               </Link>
             ))}
           </nav>
         </div>
 
-        {/* Footer Logout Button */}
-        <div className="p-6 border-t border-zinc-100 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-900/30">
+        {/* Footer Logout & Theme Toggle */}
+        <div className="p-6 border-t border-zinc-100 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Appearance</span>
+            <ThemeToggle />
+          </div>
           <LogoutButton />
         </div>
       </aside>

@@ -5,6 +5,7 @@ import Service from "@/models/Service";
 import Blog from "@/models/Blog";
 import Inquiry from "@/models/Inquiry";
 import User from "@/models/User";
+import { Inquiry as InquiryType } from "@/types";
 import DashboardOverview from "@/components/admin/DashboardOverview";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +20,7 @@ export default async function AdminOverview() {
     totalServices: 0,
     totalBlogs: 0,
     totalInquiries: 0,
-    recentLeads: [] as any[],
+    recentLeads: [] as InquiryType[],
   };
 
   try {
