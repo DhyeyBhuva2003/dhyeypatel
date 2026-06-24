@@ -56,14 +56,18 @@ export default function About() {
     <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-16 space-y-28 bg-bg-main text-text-main">
       {/* Introduction Grid */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div className="lg:col-span-5 relative w-72 h-72 sm:w-80 sm:h-80 lg:w-full lg:aspect-square mx-auto rounded-3xl overflow-hidden shadow-xl border border-border-main bg-bg-sub">
+        <div className="lg:col-span-5 flex justify-center">
           <FadeIn direction="right">
-            <Image
-              src="/dhyey.png"
-              alt="Dhyey Bhuva portrait"
-              fill
-              className="object-cover hover:scale-[1.02] transition duration-500"
-            />
+            <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-border-main bg-bg-sub shadow-2xl">
+              <Image
+                src="/dhyey.png"
+                alt="Dhyey Bhuva"
+                width={800}
+                height={1000}
+                priority
+                className="h-auto w-full object-contain transition-transform duration-500 hover:scale-[1.02]"
+              />
+            </div>
           </FadeIn>
         </div>
         <div className="lg:col-span-7 space-y-6">
