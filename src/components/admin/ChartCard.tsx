@@ -103,7 +103,6 @@ export default function ChartCard({
 
   // 3. Donut calculations
   const totalSum = data.reduce((sum, d) => sum + d.value, 0);
-  let accumulatedAngle = 0;
 
   const donutRadius = 55;
   const donutCenter = 110;
@@ -136,8 +135,10 @@ export default function ChartCard({
               {data.map((item, index) => {
                 const percent = totalSum > 0 ? (item.value / totalSum) * 100 : 0;
                 const dashArray = `${(percent * circumference) / 100} ${circumference}`;
-                const dashOffset = circumference - (accumulatedAngle * circumference) / 100;
-                accumulatedAngle += percent;
+                
+                const previousSum = data.slice(0, index).reduce((sum, d) => sum + d.value, 0);
+                const accumulatedPercent = totalSum > 0 ? (previousSum / totalSum) * 100 : 0;
+                const dashOffset = circumference - (accumulatedPercent * circumference) / 100;
 
                 // Color themes inside donut segments
                 const themeKeys: ("purple" | "blue" | "emerald" | "amber")[] = [

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
-import { FaSun, FaMoon } from "react-icons/fa";
+import { Sun, Moon } from "lucide-react";
 
 export default function ThemeToggle() {
   const { setTheme, resolvedTheme } = useTheme();
@@ -14,7 +14,7 @@ export default function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800/40 animate-pulse" />;
+    return <div className="w-9 h-9 rounded-xl bg-zinc-150 dark:bg-zinc-800/40 animate-pulse" />;
   }
 
   const isDark = resolvedTheme === "dark";
@@ -23,13 +23,13 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="p-2.5 rounded-xl border border-border-main hover:bg-bg-sub text-text-sub hover:text-text-main transition-all cursor-pointer focus:outline-none flex items-center justify-center"
+      className="p-2 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-850 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition duration-150 cursor-pointer focus:outline-none flex items-center justify-center"
       aria-label="Toggle theme"
     >
       {isDark ? (
-        <FaSun className="w-4 h-4 text-brand-accent transition-all duration-300 hover:rotate-45" />
+        <Sun className="w-4 h-4 text-amber-500 transition-all duration-300 hover:rotate-45" />
       ) : (
-        <FaMoon className="w-4 h-4 text-brand-primary transition-all duration-300 hover:-rotate-12" />
+        <Moon className="w-4 h-4 text-indigo-500 transition-all duration-300 hover:-rotate-12" />
       )}
     </button>
   );

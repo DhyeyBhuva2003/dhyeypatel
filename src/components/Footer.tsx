@@ -4,16 +4,16 @@ import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { 
-  FaGithub, 
-  FaLinkedinIn, 
-  FaYoutube, 
-  FaInstagram, 
-  FaTwitter, 
-  FaEnvelope, 
-  FaPhoneAlt, 
-  FaMapMarkerAlt, 
-  FaCalendarAlt 
+import {
+  FaGithub,
+  FaLinkedinIn,
+  FaYoutube,
+  FaInstagram,
+  FaTwitter,
+  FaEnvelope,
+  FaPhoneAlt,
+  FaMapMarkerAlt,
+  FaCalendarAlt
 } from "react-icons/fa";
 
 // Register ScrollTrigger plugin on client side
@@ -37,7 +37,7 @@ export default function Footer() {
   const footerRef = useRef<HTMLDivElement>(null);
   const columnsRef = useRef<HTMLDivElement>(null);
   const socialRef = useRef<HTMLDivElement>(null);
-  
+
   const [localTime, setLocalTime] = useState<string>("");
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
@@ -73,7 +73,7 @@ export default function Footer() {
         }
       });
 
-      mainTl.fromTo(footerRef.current, 
+      mainTl.fromTo(footerRef.current,
         { y: 60, opacity: 0 },
         { y: 0, opacity: 1, duration: 1.2, ease: "power3.out" }
       );
@@ -109,26 +109,26 @@ export default function Footer() {
   };
 
   return (
-    <footer 
+    <footer
       ref={footerRef}
       className="relative w-full border-t border-zinc-200/50 dark:border-zinc-800/40 bg-zinc-50/80 dark:bg-zinc-950/80 backdrop-blur-md overflow-hidden"
     >
       {/* Visual Design Background Elements */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808007_1px,transparent_1px),linear-gradient(to_bottom,#80808007_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none -z-10 opacity-70" />
       <div className="absolute inset-0 bg-noise-overlay pointer-events-none -z-10 opacity-[0.03]" />
-      
+
       {/* Floating Blur Circles (Subtle Premium Background Orbs) */}
       <div className="absolute top-12 left-1/4 w-72 h-72 rounded-full bg-brand-primary/5 blur-3xl -z-10 pointer-events-none" />
       <div className="absolute bottom-12 right-1/4 w-80 h-80 rounded-full bg-brand-accent/5 blur-3xl -z-10 pointer-events-none" />
 
       {/* Main Footer Container */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-16 space-y-16">
-        
+
         {/* Newsletter Section */}
         <div className="relative overflow-hidden rounded-3xl border border-zinc-200/60 dark:border-zinc-800/40 bg-white/40 dark:bg-zinc-900/20 backdrop-blur-md p-8 md:p-12 shadow-xl shadow-black/5 glow-line-top max-w-5xl mx-auto">
           {/* Subtle inside gradient background */}
           <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/5 via-transparent to-brand-accent/5 pointer-events-none" />
-          
+
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="space-y-2 text-center lg:text-left max-w-lg">
               <h3 className="text-xl sm:text-2xl font-extrabold text-text-main tracking-tight">
@@ -169,7 +169,7 @@ export default function Footer() {
 
 
         {/* Footer Grid */}
-        <div 
+        <div
           ref={columnsRef}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pt-8"
         >
@@ -187,7 +187,7 @@ export default function Footer() {
                 Solutions Architect &amp; Dev
               </p>
             </div>
-            
+
             <p className="text-xs sm:text-sm text-text-sub leading-relaxed max-w-sm mx-auto lg:mx-0">
               Building scalable SaaS applications, modern web platforms, enterprise systems, and AI-powered solutions.
             </p>
@@ -285,7 +285,7 @@ export default function Footer() {
 
 
         {/* Social Icons Section */}
-        <div 
+        <div
           ref={socialRef}
           className="flex justify-center items-center gap-3 pt-2"
         >
@@ -308,7 +308,7 @@ export default function Footer() {
           {/* Left copyright statement */}
           <div className="text-center md:text-left space-y-0.5">
             <p>© {new Date().getFullYear()} Dhyey Bhuva. All rights reserved.</p>
-            <p className="text-[10px] text-text-sub/60">Crafted with Next.js, TypeScript &amp; Passion.</p>
+            {/* <p className="text-[10px] text-text-sub/60">Crafted with Next.js, TypeScript &amp; Passion.</p> */}
           </div>
 
           {/* Center Dynamic Time Clock */}
@@ -327,7 +327,7 @@ export default function Footer() {
             <Link href="/terms" className="hover:text-brand-primary dark:hover:text-brand-accent transition">
               Terms of Service
             </Link>
-            <a 
+            <a
               href="https://github.com/dhyeybhuva2003/dhyeypatel"
               target="_blank"
               rel="noopener noreferrer"

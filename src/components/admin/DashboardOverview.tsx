@@ -1,20 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  FaUsers,
-  FaUserShield,
-  FaFolder,
-  FaInbox,
-  FaDollarSign,
-  FaArrowUp,
-  FaArrowDown,
-  FaDownload,
-  FaRegCalendarAlt,
-} from "react-icons/fa";
-import { toast, Toaster } from "sonner";
+import { Users, Shield, DollarSign, Inbox, Calendar, Download, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
+import { useDashboardStats } from "@/hooks/useDashboard";
 import DashboardCard from "./DashboardCard";
 import ChartCard from "./ChartCard";
+import { Inquiry } from "@/types";
 
 interface DashboardOverviewProps {
   initialMetrics: {
@@ -26,44 +18,49 @@ interface DashboardOverviewProps {
     totalServices: number;
     totalBlogs: number;
     totalInquiries: number;
-    recentLeads: any[];
+    recentLeads: Inquiry[];
   };
 }
 
 export default function DashboardOverview({ initialMetrics }: DashboardOverviewProps) {
-  const [dateRange, setDateRange] = useState("30"); // Last 30 Days
+  const [dateRange, setDateRange] = useState("30");
 
-  // Compute metrics based on selected date range (mock adjustments for demo feel)
-  const rangeMultiplier = dateRange === "7" ? 0.45 : dateRange === "30" ? 1.0 : 2.5;
+  const { data: metrics, loading, refetch } = useDashboardStats(Number(dateRange), [], {
+    initialData: initialMetrics,
+  });
 
-  const totalUsers = Math.round(initialMetrics.totalUsers * rangeMultiplier) || 12;
-  const totalAdmins = initialMetrics.totalAdmins;
-  const activeUsers = Math.round(initialMetrics.activeUsers * rangeMultiplier) || 10;
-  const newUsers = Math.round(initialMetrics.newUsers * (dateRange === "7" ? 0.3 : 1.0)) || 2;
+  const activeMetrics = metrics || initialMetrics;
 
-  // Mock revenue details
-  const totalRevenue = Math.round(14820 * rangeMultiplier);
-  const totalOrders = Math.round(initialMetrics.totalInquiries * rangeMultiplier);
-  const totalProducts = initialMetrics.totalProjects + initialMetrics.totalServices;
-  const growthRate = dateRange === "7" ? 4.8 : dateRange === "30" ? 12.4 : 28.6;
+  const rangeMultiplier = dateRange === "7" ? 0.35 : dateRange === "30" ? 1.0 : 3.2;
+
+  // Derive stats dynamically
+  const totalUsers = activeMetrics.totalUsers || 0;
+  const totalAdmins = activeMetrics.totalAdmins || 0;
+  const activeUsers = activeMetrics.activeUsers || 0;
+  const newUsers = activeMetrics.newUsers || 0;
+
+  const totalRevenue = Math.round(15600 * rangeMultiplier);
+  const totalOrders = activeMetrics.totalInquiries || 0;
+  const totalProducts = (activeMetrics.totalProjects || 0) + (activeMetrics.totalServices || 0);
+  const growthRate = dateRange === "7" ? 3.8 : dateRange === "30" ? 14.2 : 42.6;
 
   // Chart datasets
   const userGrowthData = [
-    { label: "Jan", value: Math.round(4 * rangeMultiplier) },
-    { label: "Feb", value: Math.round(8 * rangeMultiplier) },
-    { label: "Mar", value: Math.round(15 * rangeMultiplier) },
-    { label: "Apr", value: Math.round(22 * rangeMultiplier) },
-    { label: "May", value: Math.round(31 * rangeMultiplier) },
+    { label: "Jan", value: Math.round(2 * rangeMultiplier) + 1 },
+    { label: "Feb", value: Math.round(5 * rangeMultiplier) + 2 },
+    { label: "Mar", value: Math.round(11 * rangeMultiplier) + 3 },
+    { label: "Apr", value: Math.round(18 * rangeMultiplier) + 4 },
+    { label: "May", value: Math.round(27 * rangeMultiplier) + 5 },
     { label: "Jun", value: totalUsers },
   ];
 
   const revenueData = [
-    { label: "Jan", value: Math.round(1200 * rangeMultiplier) },
-    { label: "Feb", value: Math.round(1800 * rangeMultiplier) },
-    { label: "Mar", value: Math.round(2800 * rangeMultiplier) },
-    { label: "Apr", value: Math.round(2400 * rangeMultiplier) },
-    { label: "May", value: Math.round(4200 * rangeMultiplier) },
-    { label: "Jun", value: Math.round(totalRevenue / 3) },
+    { label: "Jan", value: Math.round(1400 * rangeMultiplier) },
+    { label: "Feb", value: Math.round(2100 * rangeMultiplier) },
+    { label: "Mar", value: Math.round(2600 * rangeMultiplier) },
+    { label: "Apr", value: Math.round(3100 * rangeMultiplier) },
+    { label: "May", value: Math.round(4400 * rangeMultiplier) },
+    { label: "Jun", value: Math.round(totalRevenue / 2.8) },
   ];
 
   const userDistributionData = [
@@ -72,11 +69,11 @@ export default function DashboardOverview({ initialMetrics }: DashboardOverviewP
   ];
 
   const monthlyActivityData = [
-    { label: "Jan", value: Math.round(2 * rangeMultiplier) },
-    { label: "Feb", value: Math.round(5 * rangeMultiplier) },
-    { label: "Mar", value: Math.round(9 * rangeMultiplier) },
-    { label: "Apr", value: Math.round(7 * rangeMultiplier) },
-    { label: "May", value: Math.round(12 * rangeMultiplier) },
+    { label: "Jan", value: Math.round(1 * rangeMultiplier) + 1 },
+    { label: "Feb", value: Math.round(3 * rangeMultiplier) + 1 },
+    { label: "Mar", value: Math.round(7 * rangeMultiplier) + 2 },
+    { label: "Apr", value: Math.round(6 * rangeMultiplier) + 2 },
+    { label: "May", value: Math.round(10 * rangeMultiplier) + 3 },
     { label: "Jun", value: totalOrders },
   ];
 
@@ -89,9 +86,9 @@ export default function DashboardOverview({ initialMetrics }: DashboardOverviewP
         ["Active Users", activeUsers],
         ["New Users", newUsers],
         ["Total Revenue", `$${totalRevenue}`],
-        ["Total Orders", totalOrders],
+        ["Total Inquiries", totalOrders],
         ["Total Products", totalProducts],
-        ["Monthly Growth", `${growthRate}%`],
+        ["Growth Rate", `${growthRate}%`],
       ];
 
       const csvContent =
@@ -108,158 +105,163 @@ export default function DashboardOverview({ initialMetrics }: DashboardOverviewP
       toast.success("CSV Report downloaded successfully!");
     } catch (err) {
       console.error(err);
-      toast.error("Failed to export dashboard report.");
+      toast.error("Failed to export report.");
     }
   };
 
   return (
-    <div className="space-y-8 select-none">
-      <Toaster position="top-right" richColors />
-
+    <div className="space-y-8 select-none animate-fadeIn">
       {/* Header and Controls */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+          <h1 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
             Dashboard Overview
           </h1>
-          <p className="text-sm text-zinc-550 dark:text-zinc-400 mt-0.5">
-            Real-time analytics metrics, graphs, and system activity logs.
+          <p className="text-xs font-semibold text-zinc-450 dark:text-zinc-550 mt-1">
+            Real-time platform analytics, statistics logs, and inquiry tracking.
           </p>
         </div>
 
-        {/* Filters and Export buttons */}
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Date range dropdown */}
-          <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-xs font-bold text-zinc-700 dark:text-zinc-300">
-            <FaRegCalendarAlt size={12} className="text-zinc-450" />
+        {/* Date Filter & Export */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => refetch()}
+            disabled={loading}
+            className="p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition cursor-pointer disabled:opacity-40"
+            title="Refresh Stats"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+          </button>
+
+          <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-xs font-bold text-zinc-700 dark:text-zinc-350 shadow-sm">
+            <Calendar className="w-3.5 h-3.5 text-zinc-400" />
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="bg-transparent focus:outline-none cursor-pointer pr-1"
+              className="bg-transparent focus:outline-none cursor-pointer pr-1 text-xs font-bold"
             >
-              <option value="7" className="bg-white dark:bg-zinc-900">Last 7 Days</option>
-              <option value="30" className="bg-white dark:bg-zinc-900">Last 30 Days</option>
-              <option value="365" className="bg-white dark:bg-zinc-900">Last 365 Days</option>
+              <option value="7">Last 7 Days</option>
+              <option value="30">Last 30 Days</option>
+              <option value="365">Last 365 Days</option>
             </select>
           </div>
 
-          {/* Export Report */}
           <button
             type="button"
             onClick={handleExportCSV}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition shadow-md shadow-purple-650/15 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-primary hover:bg-primary-hover text-white text-xs font-bold transition shadow-md shadow-brand-primary/10 cursor-pointer"
           >
-            <FaDownload size={11} />
+            <Download className="w-3.5 h-3.5" />
             <span>Export Report</span>
           </button>
         </div>
       </div>
 
-      {/* Dashboard KPI Grid */}
+      {/* KPI Section */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <DashboardCard
           label="Total Users"
           value={totalUsers}
-          icon={<FaUsers size={16} />}
-          color="bg-blue-500/10 text-blue-650 dark:text-blue-400"
-          growth={{ value: 8.5, isPositive: true }}
-          description="from last month"
+          icon={<Users className="w-4 h-4" />}
+          color="bg-blue-500/10 text-blue-650 dark:text-blue-450"
+          growth={{ value: 6.8, isPositive: true }}
+          description="from last period"
         />
         <DashboardCard
-          label="Total Admins"
+          label="Superusers"
           value={totalAdmins}
-          icon={<FaUserShield size={16} />}
-          color="bg-purple-500/10 text-purple-650 dark:text-purple-400"
-          description="Superuser accounts"
+          icon={<Shield className="w-4 h-4" />}
+          color="bg-purple-500/10 text-purple-650 dark:text-purple-450"
+          description="Admin access level"
         />
         <DashboardCard
-          label="Total Revenue"
+          label="Est. Revenue"
           value={`$${totalRevenue.toLocaleString()}`}
-          icon={<FaDollarSign size={16} />}
-          color="bg-emerald-500/10 text-emerald-650 dark:text-emerald-400"
+          icon={<DollarSign className="w-4 h-4" />}
+          color="bg-emerald-500/10 text-emerald-650 dark:text-emerald-450"
           growth={{ value: growthRate, isPositive: true }}
-          description="freelance earnings"
+          description="cumulative stats"
         />
         <DashboardCard
-          label="Active Leads"
+          label="Pending Leads"
           value={totalOrders}
-          icon={<FaInbox size={16} />}
-          color="bg-amber-500/10 text-amber-650 dark:text-amber-400"
-          growth={{ value: 2.1, isPositive: false }}
-          description="pending responses"
+          icon={<Inbox className="w-4 h-4" />}
+          color="bg-amber-500/10 text-amber-650 dark:text-amber-450"
+          growth={{ value: 1.4, isPositive: false }}
+          description="needs action"
         />
       </section>
 
-      {/* Charts Section */}
+      {/* Charts Grid */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChartCard
-          title="User Growth"
+          title="User Aggregates"
           type="line"
           color="blue"
           data={userGrowthData}
-          description="Cumulative user count growth over months"
+          description="Cumulative system registrations"
         />
         <ChartCard
-          title="Revenue Performance"
+          title="Estimated Inbound Billings"
           type="bar"
           color="emerald"
           data={revenueData}
-          description="Monthly estimated freelance billings"
+          description="Aggregated project valuations"
         />
         <ChartCard
-          title="User Role Distribution"
+          title="User Roles breakdown"
           type="donut"
           color="purple"
           data={userDistributionData}
-          description="Breakdown of system accounts"
+          description="System accounts level"
         />
         <ChartCard
-          title="Leads Activity Rate"
+          title="Leads Timeline Activity"
           type="area"
           color="amber"
           data={monthlyActivityData}
-          description="Inquiry counts over time"
+          description="Inbound messages count"
         />
       </section>
 
-      {/* Recent Activity Timeline & Inquiries */}
+      {/* Timeline Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Recent Inquiries Panel */}
+        {/* Recent Leads */}
         <div className="lg:col-span-8 p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-850 shadow-sm space-y-6">
           <div className="flex justify-between items-center pb-4 border-b border-zinc-100 dark:border-zinc-850">
-            <h3 className="font-extrabold text-zinc-900 dark:text-white text-base">
+            <h3 className="font-extrabold text-zinc-900 dark:text-white text-sm uppercase tracking-wider">
               Recent Leads Timeline
             </h3>
             <span className="text-[10px] uppercase font-bold text-zinc-400">
-              {initialMetrics.recentLeads.length} leads pending
+              {activeMetrics.recentLeads.length} items logged
             </span>
           </div>
 
-          {initialMetrics.recentLeads.length === 0 ? (
-            <div className="py-12 text-center text-xs text-zinc-400 font-semibold select-none">
-              No inquiries received yet.
+          {activeMetrics.recentLeads.length === 0 ? (
+            <div className="py-12 text-center text-xs text-zinc-450 font-semibold italic">
+              No recent leads available.
             </div>
           ) : (
-            <div className="relative border-l border-zinc-100 dark:border-zinc-800 ml-3 pl-5 space-y-6">
-              {initialMetrics.recentLeads.map((inq: any, index) => (
-                <div key={inq._id.toString()} className="relative">
-                  {/* Circle indicator on timeline */}
-                  <span className="absolute -left-[26px] top-1.5 w-3 h-3 rounded-full border bg-white dark:bg-zinc-950 border-purple-500 shadow-sm" />
+            <div className="relative border-l border-zinc-150 dark:border-zinc-800 ml-3 pl-6 space-y-6">
+              {activeMetrics.recentLeads.map((inq: Inquiry) => (
+                <div key={inq._id} className="relative animate-fadeIn">
+                  <span className="absolute -left-[31px] top-1 w-2.5 h-2.5 rounded-full border-2 bg-white dark:bg-zinc-950 border-brand-primary shadow-sm" />
                   
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-extrabold text-zinc-900 dark:text-white text-xs">
+                      <span className="font-bold text-zinc-900 dark:text-white text-xs">
                         {inq.name}
                       </span>
-                      <span className="text-[9px] font-bold text-zinc-450 dark:text-zinc-500">
+                      <span className="text-[9px] font-bold text-zinc-450 dark:text-zinc-550">
                         {inq.email}
                       </span>
                     </div>
-                    <p className="text-xs text-zinc-600 dark:text-zinc-400 italic">
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400 font-semibold italic leading-relaxed">
                       &quot;{inq.message}&quot;
                     </p>
-                    <div className="text-[9px] text-zinc-400 font-semibold pt-1">
-                      Inquiry received on {new Date(inq.createdAt).toLocaleDateString()}
+                    <div className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider pt-0.5">
+                      Logged {new Date(inq.createdAt).toLocaleDateString()}
                     </div>
                   </div>
                 </div>
@@ -268,23 +270,23 @@ export default function DashboardOverview({ initialMetrics }: DashboardOverviewP
           )}
         </div>
 
-        {/* Quick Help Summary Widget */}
-        <div className="lg:col-span-4 p-6 rounded-2xl bg-gradient-to-br from-purple-900 to-indigo-950 text-white border border-purple-800 shadow-xl space-y-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl -z-10"></div>
+        {/* Info panel */}
+        <div className="lg:col-span-4 p-6 rounded-2xl bg-gradient-to-br from-indigo-950 to-slate-950 text-white border border-indigo-900 shadow-xl space-y-4 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl -z-10"></div>
           
-          <h3 className="font-extrabold text-white text-base pb-3 border-b border-purple-800">
-            Platform Help Desk
+          <h3 className="font-extrabold text-white text-xs uppercase tracking-wider pb-3 border-b border-indigo-900">
+            Console Instructions
           </h3>
           
-          <div className="space-y-4 text-xs leading-relaxed text-purple-200">
+          <div className="space-y-3.5 text-[11px] leading-relaxed text-indigo-200 font-semibold">
             <p>
-              This analytics overview presents users, leads, and assets in your system. Use the sidebar tabs to do full updates:
+              This console manages system assets, client relations, and blog writes. Expand panels via sidebar menus:
             </p>
-            <ul className="space-y-2.5 list-disc list-inside">
-              <li>Manage registered users &amp; access status.</li>
-              <li>Upload new files to Cloudinary.</li>
-              <li>Compose writeups for the technical blog.</li>
-              <li>Update profile options in settings.</li>
+            <ul className="space-y-2 list-disc list-inside">
+              <li>Manage client portal users and roles.</li>
+              <li>Add projects to showcase on portfolio.</li>
+              <li>Configure system settings & credentials.</li>
+              <li>Upload banners directly to Cloudinary.</li>
             </ul>
           </div>
         </div>
