@@ -4,6 +4,7 @@ import Project from "@/models/Project";
 import { getCurrentAdmin } from "@/lib/auth";
 import { projectSchema } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
 // GET individual project by ID
 export async function GET(
@@ -94,6 +95,9 @@ export async function PUT(
       );
     }
 
+    revalidatePath("/portfolio");
+    revalidatePath("/");
+
     return NextResponse.json({
       success: true,
       message: "Project updated successfully",
@@ -135,6 +139,9 @@ export async function DELETE(
         { status: 404 }
       );
     }
+
+    revalidatePath("/portfolio");
+    revalidatePath("/");
 
     return NextResponse.json({
       success: true,

@@ -18,7 +18,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { name, email, currentPassword, newPassword } = body;
+    const { name, email, currentPassword, newPassword, profileImage } = body;
 
     // Validate base inputs
     if (!name || !email) {
@@ -73,6 +73,9 @@ export async function PUT(request: Request) {
     // 4. Update Profile Details
     dbUser.name = name;
     dbUser.email = email.toLowerCase().trim();
+    if (profileImage !== undefined) {
+      dbUser.profileImage = profileImage;
+    }
     await dbUser.save();
 
     return NextResponse.json({

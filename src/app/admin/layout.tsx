@@ -9,10 +9,11 @@ import {
   FaPenSquare,
   FaInbox,
   FaCog,
-  FaSignOutAlt,
   FaUserShield,
+  FaUsers,
 } from "react-icons/fa";
 import LogoutButton from "@/components/LogoutButton";
+import UserAvatar from "@/components/admin/UserAvatar";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,7 @@ interface AdminLayoutProps {
 
 const menuItems = [
   { name: "Overview", href: "/admin", icon: <FaChartLine /> },
+  { name: "Users", href: "/admin/users", icon: <FaUsers /> },
   { name: "Projects", href: "/admin/projects", icon: <FaFolder /> },
   { name: "Services", href: "/admin/services", icon: <FaConciergeBell /> },
   { name: "Blogs", href: "/admin/blogs", icon: <FaPenSquare /> },
@@ -43,9 +45,11 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
         <div className="p-6 space-y-8">
           {/* Header Portal Info */}
           <div className="flex items-center gap-3 pb-4 border-b border-zinc-100 dark:border-zinc-850">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20 text-purple-600 dark:text-purple-400">
-              <FaUserShield size={18} />
-            </div>
+            <UserAvatar
+              name={admin.name}
+              imageUrl={admin.profileImage?.secure_url}
+              size="md"
+            />
             <div>
               <h2 className="font-extrabold text-zinc-900 dark:text-white text-sm tracking-tight leading-none">
                 Admin Panel

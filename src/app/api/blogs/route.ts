@@ -4,6 +4,7 @@ import Blog from "@/models/Blog";
 import { getCurrentAdmin } from "@/lib/auth";
 import { blogSchema } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
 export async function GET(request: Request) {
   try {
@@ -75,6 +76,9 @@ export async function POST(request: Request) {
       slug,
       publishedAt: blogData.published ? new Date() : undefined,
     });
+
+    revalidatePath("/blog");
+    revalidatePath("/");
 
     return NextResponse.json(
       {

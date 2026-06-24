@@ -12,6 +12,7 @@ import { formatDate } from "@/lib/utils";
 import { getPersonSchema } from "@/lib/seo";
 import FadeIn from "@/components/FadeIn";
 import SkillsSection from "@/components/SkillsSection";
+import Magnetic from "@/components/Magnetic";
 
 export const revalidate = 3600; // Revalidate page every hour
 
@@ -136,20 +137,24 @@ export default async function Home() {
 
             <FadeIn direction="up" delay={0.4}>
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                <Link
-                  href="/portfolio"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-white bg-brand-primary hover:bg-brand-primary/90 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-xl shadow-brand-primary/25"
-                >
-                  <span>View My Work</span>
-                  <FaArrowRight size={13} />
-                </Link>
-                <Link
-                  href="/contact"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-text-main border border-border-main hover:bg-bg-sub/60 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97]"
-                >
-                  <span>Let&apos;s Talk</span>
-                  <FaCommentDots size={13} />
-                </Link>
+                <Magnetic>
+                  <Link
+                    href="/portfolio"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-white bg-brand-primary hover:bg-brand-primary/90 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-xl shadow-brand-primary/25"
+                  >
+                    <span>View My Work</span>
+                    <FaArrowRight size={13} />
+                  </Link>
+                </Magnetic>
+                <Magnetic>
+                  <Link
+                    href="/contact"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-text-main border border-border-main hover:bg-bg-sub/60 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97]"
+                  >
+                    <span>Let&apos;s Talk</span>
+                    <FaCommentDots size={13} />
+                  </Link>
+                </Magnetic>
               </div>
             </FadeIn>
 
