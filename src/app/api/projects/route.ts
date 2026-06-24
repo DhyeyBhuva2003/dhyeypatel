@@ -4,6 +4,7 @@ import Project from "@/models/Project";
 import { getCurrentAdmin } from "@/lib/auth";
 import { projectSchema } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -66,6 +67,9 @@ export async function POST(request: Request) {
       ...projectData,
       slug,
     });
+
+    revalidatePath("/portfolio");
+    revalidatePath("/");
 
     return NextResponse.json(
       {

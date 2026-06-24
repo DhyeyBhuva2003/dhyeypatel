@@ -24,7 +24,13 @@ export default async function AdminSettingsPage() {
       </div>
 
       {/* 2. Render Settings Client Form */}
-      <SettingsForm admin={{ name: admin.name, email: admin.email }} />
+      <SettingsForm
+        admin={{
+          name: admin.name,
+          email: admin.email,
+          profileImage: admin.profileImage,
+        }}
+      />
     </div>
   );
 }

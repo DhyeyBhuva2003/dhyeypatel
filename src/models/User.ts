@@ -5,6 +5,12 @@ export interface IUser extends Document {
   email: string;
   password?: string;
   role: "ADMIN" | "USER";
+  profileImage?: {
+    public_id: string;
+    secure_url: string;
+  };
+  status: "ACTIVE" | "INACTIVE" | "PENDING";
+  lastLogin?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,6 +21,16 @@ const UserSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
     password: { type: String, required: true },
     role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
+    profileImage: {
+      public_id: { type: String, default: "" },
+      secure_url: { type: String, default: "" },
+    },
+    status: {
+      type: String,
+      enum: ["ACTIVE", "INACTIVE", "PENDING"],
+      default: "ACTIVE",
+    },
+    lastLogin: { type: Date },
   },
   { timestamps: true }
 );

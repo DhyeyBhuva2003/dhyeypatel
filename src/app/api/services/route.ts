@@ -4,6 +4,7 @@ import Service from "@/models/Service";
 import { getCurrentAdmin } from "@/lib/auth";
 import { serviceSchema } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -66,6 +67,9 @@ export async function POST(request: Request) {
       ...serviceData,
       slug,
     });
+
+    revalidatePath("/services");
+    revalidatePath("/");
 
     return NextResponse.json(
       {

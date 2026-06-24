@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaBars, FaTimes } from "react-icons/fa";
 import ThemeToggle from "./ThemeToggle";
+import Magnetic from "./Magnetic";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -99,12 +100,14 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <ThemeToggle />
           
-          <Link
-            href="/contact"
-            className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-brand-primary hover:bg-brand-primary/90 hover:scale-[1.02] active:scale-[0.98] transition duration-300 shadow-lg shadow-brand-primary/10"
-          >
-            Hire Me
-          </Link>
+          <Magnetic>
+            <Link
+              href="/contact"
+              className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-brand-primary hover:bg-brand-primary/90 hover:scale-[1.02] active:scale-[0.98] transition duration-300 shadow-lg shadow-brand-primary/10"
+            >
+              Hire Me
+            </Link>
+          </Magnetic>
 
           {/* Hamburger Menu Toggle */}
           <button

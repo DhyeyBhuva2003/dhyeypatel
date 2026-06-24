@@ -166,3 +166,11 @@ body {
 .border-animated {
   animation: border-pulse 3s ease-in-out infinite;
 }
+
+/* ─── Custom Interactive Cursor ───────────────────────────────────────────────── */
+@media (pointer: fine) {
+  .custom-cursor-active,
+  .custom-cursor-active * {
+    cursor: none !important;
+  }
+}

@@ -44,6 +44,10 @@ export async function POST(request: Request) {
       );
     }
 
+    // Update last login timestamp
+    user.lastLogin = new Date();
+    await user.save();
+
     // 4. Token Generation (7 days duration)
     const token = await signToken({
       id: user._id.toString(),

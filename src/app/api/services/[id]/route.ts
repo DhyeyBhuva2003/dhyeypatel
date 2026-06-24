@@ -4,6 +4,7 @@ import Service from "@/models/Service";
 import { getCurrentAdmin } from "@/lib/auth";
 import { serviceSchema } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
 // GET individual service by ID
 export async function GET(
@@ -94,6 +95,9 @@ export async function PUT(
       );
     }
 
+    revalidatePath("/services");
+    revalidatePath("/");
+
     return NextResponse.json({
       success: true,
       message: "Service updated successfully",
@@ -135,6 +139,9 @@ export async function DELETE(
         { status: 404 }
       );
     }
+
+    revalidatePath("/services");
+    revalidatePath("/");
 
     return NextResponse.json({
       success: true,

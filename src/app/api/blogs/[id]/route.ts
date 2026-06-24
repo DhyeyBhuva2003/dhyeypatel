@@ -4,6 +4,7 @@ import Blog from "@/models/Blog";
 import { getCurrentAdmin } from "@/lib/auth";
 import { blogSchema } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
 // GET individual blog by ID
 export async function GET(
@@ -104,6 +105,9 @@ export async function PUT(
       { new: true, runValidators: true }
     );
 
+    revalidatePath("/blog");
+    revalidatePath("/");
+
     return NextResponse.json({
       success: true,
       message: "Blog post updated successfully",
@@ -145,6 +149,9 @@ export async function DELETE(
         { status: 404 }
       );
     }
+
+    revalidatePath("/blog");
+    revalidatePath("/");
 
     return NextResponse.json({
       success: true,
