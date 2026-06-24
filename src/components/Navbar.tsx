@@ -38,10 +38,28 @@ export default function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
+  // Prevent scrolling when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
+      className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
+        isOpen ? "inset-0" : "top-0"
+      } ${
+        isOpen
+          ? scrolled
+            ? "bg-white dark:bg-[#020617] py-3.5"
+            : "bg-white dark:bg-[#020617] py-6"
+          : scrolled
           ? "bg-bg-main/80 backdrop-blur-md border-b border-border-main py-3.5 shadow-sm"
           : "bg-transparent py-6"
       }`}
