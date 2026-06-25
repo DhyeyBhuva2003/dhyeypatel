@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaArrowRight, FaCode, FaRocket, FaServer, FaDatabase, FaGithub, FaLinkedin, FaEnvelope, FaCommentDots, FaChevronDown, FaBriefcase, FaMicrochip, FaSmile, FaClock } from "react-icons/fa";
+import * as FaIcons from "react-icons/fa";
 import { SiNextdotjs, SiReact, SiNodedotjs, SiTypescript, SiMongodb } from "react-icons/si";
 import { FaAws } from "react-icons/fa";
 import connectToDatabase from "@/lib/db";
@@ -16,18 +17,17 @@ import Magnetic from "@/components/Magnetic";
 
 export const revalidate = 3600; // Revalidate page every hour
 
-// Helper to map icon string to React Icon component
+// Helper to map icon string to React Icon component dynamically
 function getIconComponent(iconName: string) {
-  switch (iconName) {
-    case "FaCode":
-      return <FaCode className="w-5 h-5 text-brand-primary dark:text-brand-accent" />;
-    case "FaRocket":
-      return <FaRocket className="w-5 h-5 text-brand-primary dark:text-brand-accent" />;
-    case "FaServer":
-      return <FaServer className="w-5 h-5 text-brand-primary dark:text-brand-accent" />;
-    default:
-      return <FaDatabase className="w-5 h-5 text-brand-primary dark:text-brand-accent" />;
+  let formattedName = iconName;
+  if (iconName && !iconName.startsWith("Fa")) {
+    formattedName = "Fa" + iconName.charAt(0).toUpperCase() + iconName.slice(1);
   }
+  const IconComponent = (FaIcons as any)[formattedName];
+  if (IconComponent) {
+    return <IconComponent className="w-5 h-5 text-brand-primary dark:text-brand-accent" />;
+  }
+  return <FaIcons.FaDatabase className="w-5 h-5 text-brand-primary dark:text-brand-accent" />;
 }
 
 // Code Preview Card
