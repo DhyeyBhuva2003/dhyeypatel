@@ -6,6 +6,10 @@ export interface IInquiry extends Document {
   subject?: string;
   message: string;
   status: "PENDING" | "CONTACTED" | "RESOLVED";
+  attachmentUrl?: string;
+  attachmentName?: string;
+  attachmentSize?: number;
+  attachmentPublicId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,6 +26,10 @@ const InquirySchema = new Schema<IInquiry>(
       default: "PENDING",
       index: true,
     },
+    attachmentUrl: { type: String, default: "" },
+    attachmentName: { type: String, default: "" },
+    attachmentSize: { type: Number, default: 0 },
+    attachmentPublicId: { type: String, default: "" },
   },
   { timestamps: true }
 );

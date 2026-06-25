@@ -41,6 +41,23 @@ export default function Footer() {
   const [localTime, setLocalTime] = useState<string>("");
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [dynamicServices, setDynamicServices] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await fetch("/api/services");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          const sorted = [...json.data].sort((a, b) => (a.order || 0) - (b.order || 0));
+          setDynamicServices(sorted.slice(0, 6));
+        }
+      } catch (err) {
+        console.error("Failed to fetch services in footer:", err);
+      }
+    };
+    fetchServices();
+  }, []);
 
   // Time Synced to Ahmedabad (Asia/Kolkata)
   useEffect(() => {
@@ -204,20 +221,36 @@ export default function Footer() {
               Services
             </h4>
             <ul className="space-y-2.5 text-xs sm:text-sm text-text-sub">
-              {[
-                "Full Stack Development",
-                "SaaS Development",
-                "E-Commerce Solutions",
-                "API Development",
-                "System Architecture",
-                "AI Integrations"
-              ].map((service, index) => (
-                <li key={index}>
-                  <Link href="/services" className="hover:text-brand-primary dark:hover:text-brand-accent transition-colors duration-250">
-                    {service}
-                  </Link>
-                </li>
-              ))}
+              {dynamicServices.length > 0 ? (
+                dynamicServices.map((service) => (
+                  <li key={service._id}>
+                    <Link 
+                      href={`/services#${service.slug}`} 
+                      className="hover:text-brand-primary dark:hover:text-brand-accent transition-colors duration-250"
+                    >
+                      {service.title}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                [
+                  { title: "E-Commerce Website Development", slug: "ecommerce-development" },
+                  { title: "Custom ERP Software Development", slug: "erp-software-development" },
+                  { title: "CRM Software Development", slug: "crm-software-development" },
+                  { title: "Custom Business Software", slug: "custom-business-software" },
+                  { title: "Cross-Platform Mobile App Development", slug: "mobile-app-development" },
+                  { title: "AI Automation & Business Solutions", slug: "ai-automation-solutions" },
+                ].map((s, index) => (
+                  <li key={index}>
+                    <Link 
+                      href={`/services#${s.slug}`} 
+                      className="hover:text-brand-primary dark:hover:text-brand-accent transition-colors duration-250"
+                    >
+                      {s.title}
+                    </Link>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
 

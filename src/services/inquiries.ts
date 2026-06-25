@@ -24,6 +24,11 @@ export const inquiriesService = {
     return response.data;
   },
 
+  async deleteAttachment(id: string) {
+    const response = await apiClient.patch(`/inquiries/${id}`, { deleteAttachment: true });
+    return response.data;
+  },
+
   async delete(id: string) {
     const response = await apiClient.delete(`/inquiries/${id}`);
     return response.data;

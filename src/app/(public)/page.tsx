@@ -297,8 +297,16 @@ export default async function Home() {
                   </ul>
                 </div>
                 <div className="pt-6 border-t border-border-main mt-6 flex justify-between items-center">
-                  <span className="text-xs text-text-sub">Starting at</span>
-                  <span className="text-lg font-extrabold text-text-main">{service.price}</span>
+                  <div className="space-y-0.5">
+                    <span className="block text-[10px] text-text-sub uppercase tracking-wider font-bold">Starting at</span>
+                    <span className="text-lg font-extrabold text-text-main">{service.price}</span>
+                  </div>
+                  <Link
+                    href={`/contact?subject=${encodeURIComponent(`Inquiry regarding ${service.title}`)}`}
+                    className="px-4 py-2 rounded-xl bg-brand-primary hover:bg-brand-primary/95 text-white font-bold text-xs hover:scale-[1.02] transition"
+                  >
+                    Get Started
+                  </Link>
                 </div>
               </div>
             </FadeIn>

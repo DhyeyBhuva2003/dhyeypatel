@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import Inquiry from "@/models/Inquiry";
 import { getCurrentAdmin } from "@/lib/auth";
+import { cloudinary } from "@/lib/cloudinary";
 
-// PATCH update inquiry status by ID
+// PATCH update inquiry status by ID or delete inquiry attachment
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -21,7 +22,44 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { status } = body;
+    const { status, deleteAttachment } = body;
+
+    await connectToDatabase();
+    const inquiry = await Inquiry.findById(id);
+
+    if (!inquiry) {
+      return NextResponse.json(
+        { success: false, message: "Inquiry not found" },
+        { status: 404 }
+      );
+    }
+
+    // Handle Delete Attachment option
+    if (deleteAttachment) {
+      if (inquiry.attachmentPublicId) {
+        try {
+          const ext = inquiry.attachmentName?.split(".").pop()?.toLowerCase() || "";
+          const isImage = ["jpg", "jpeg", "png", "webp"].includes(ext);
+          const resource_type = isImage ? "image" : "raw";
+
+          await cloudinary.uploader.destroy(inquiry.attachmentPublicId, { resource_type });
+        } catch (cloudinaryErr) {
+          console.error("Failed to delete attachment from Cloudinary:", cloudinaryErr);
+        }
+      }
+
+      inquiry.attachmentUrl = "";
+      inquiry.attachmentName = "";
+      inquiry.attachmentSize = 0;
+      inquiry.attachmentPublicId = "";
+      await inquiry.save();
+
+      return NextResponse.json({
+        success: true,
+        message: "Attachment deleted successfully",
+        data: inquiry,
+      });
+    }
 
     // Validate status value
     if (!status || !["PENDING", "CONTACTED", "RESOLVED"].includes(status)) {
@@ -31,20 +69,9 @@ export async function PATCH(
       );
     }
 
-    // 2. Update Database
-    await connectToDatabase();
-    const inquiry = await Inquiry.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true, runValidators: true }
-    );
-
-    if (!inquiry) {
-      return NextResponse.json(
-        { success: false, message: "Inquiry not found" },
-        { status: 404 }
-      );
-    }
+    // Update Status
+    inquiry.status = status;
+    await inquiry.save();
 
     return NextResponse.json({
       success: true,
@@ -60,7 +87,7 @@ export async function PATCH(
   }
 }
 
-// DELETE inquiry by ID
+// DELETE inquiry by ID and its Cloudinary attachment
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -77,9 +104,9 @@ export async function DELETE(
       );
     }
 
-    // 2. Delete from Database
+    // 2. Fetch from Database
     await connectToDatabase();
-    const inquiry = await Inquiry.findByIdAndDelete(id);
+    const inquiry = await Inquiry.findById(id);
 
     if (!inquiry) {
       return NextResponse.json(
@@ -87,6 +114,22 @@ export async function DELETE(
         { status: 404 }
       );
     }
+
+    // Delete attachment from Cloudinary if it exists
+    if (inquiry.attachmentPublicId) {
+      try {
+        const ext = inquiry.attachmentName?.split(".").pop()?.toLowerCase() || "";
+        const isImage = ["jpg", "jpeg", "png", "webp"].includes(ext);
+        const resource_type = isImage ? "image" : "raw";
+
+        await cloudinary.uploader.destroy(inquiry.attachmentPublicId, { resource_type });
+      } catch (cloudinaryErr) {
+        console.error("Failed to delete attachment on inquiry deletion:", cloudinaryErr);
+      }
+    }
+
+    // Delete from Database
+    await inquiry.deleteOne();
 
     return NextResponse.json({
       success: true,
