@@ -43,4 +43,43 @@ export async function uploadImageBuffer(
   });
 }
 
+/**
+ * Upload a binary document/file buffer to Cloudinary using auto resource type mapping.
+ * Supports PDF, DOC, DOCX, XLS, XLSX, etc.
+ * 
+ * @param fileBuffer The file buffer to upload
+ * @param folder Cloudinary folder designation
+ * @param filename Custom public_id designation
+ */
+export async function uploadFileBuffer(
+  fileBuffer: Buffer,
+  folder: string = "inquiries",
+  filename?: string
+): Promise<{ secure_url: string; public_id: string }> {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        resource_type: "auto",
+        public_id: filename,
+      },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary file upload stream error:", error);
+          reject(error);
+        } else if (result) {
+          resolve({
+            secure_url: result.secure_url,
+            public_id: result.public_id,
+          });
+        } else {
+          reject(new Error("Cloudinary returned empty result."));
+        }
+      }
+    );
+    
+    uploadStream.end(fileBuffer);
+  });
+}
+
 export { cloudinary };

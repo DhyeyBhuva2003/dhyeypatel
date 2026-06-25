@@ -350,108 +350,108 @@ export default function UserManagementPage() {
       {isFormOpen && (
         <Portal>
           <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm animate-fadeIn">
-          {/* Overlay Click Target to Close */}
-          <div className="absolute inset-0" onClick={() => setIsFormOpen(false)} />
-          
-          <div className="relative w-full max-w-md h-full bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col justify-between animate-slideInRight z-10">
-            {/* Drawer Header */}
-            <div className="sticky top-0 bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 px-6 py-4 flex justify-between items-center z-25">
-              <div>
-                <h3 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-wider">
-                  {editingUser ? "Modify User Credentials" : "Create User Account"}
-                </h3>
-                <p className="text-[10px] font-bold text-zinc-450 dark:text-zinc-500 mt-0.5 leading-none">
-                  {editingUser ? "Edit administrative permissions and credentials." : "Provision a new dashboard account."}
-                </p>
+            {/* Overlay Click Target to Close */}
+            <div className="absolute inset-0" onClick={() => setIsFormOpen(false)} />
+
+            <div className="relative w-full max-w-md h-full bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col justify-between animate-slideInRight z-10">
+              {/* Drawer Header */}
+              <div className="sticky top-0 bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 px-6 py-4 flex justify-between items-center z-25">
+                <div>
+                  <h3 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-wider">
+                    {editingUser ? "Modify User Credentials" : "Create User Account"}
+                  </h3>
+                  <p className="text-[10px] font-bold text-zinc-450 dark:text-zinc-500 mt-0.5 leading-none">
+                    {editingUser ? "Edit administrative permissions and credentials." : "Provision a new dashboard account."}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsFormOpen(false)}
+                  className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850 cursor-pointer"
+                >
+                  <X className="w-4.5 h-4.5" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsFormOpen(false)}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850 cursor-pointer"
-              >
-                <X className="w-4.5 h-4.5" />
-              </button>
+
+              {/* Drawer Scrollable Content */}
+              <FormProvider {...formMethods}>
+                <form onSubmit={formMethods.handleSubmit(handleFormSubmit)} className="flex-1 flex flex-col justify-between overflow-hidden">
+                  <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 scrollbar-thin">
+
+                    {/* Card Section: General details */}
+                    <div className="p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                      <h4 className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">General Information</h4>
+                      <div className="space-y-4">
+                        <FormInput name="name" label="Name" placeholder="John Doe" required />
+                        <FormInput name="email" label="Email Address" placeholder="john@example.com" required />
+                      </div>
+                    </div>
+
+                    {/* Card Section: Security */}
+                    <div className="p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                      <h4 className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">Security Credentials</h4>
+                      <FormPasswordInput
+                        name="password"
+                        label={editingUser ? "Change Password" : "Password"}
+                        placeholder="••••••••"
+                        showStrength={!editingUser}
+                        required={!editingUser}
+                      />
+                    </div>
+
+                    {/* Card Section: Access & Status */}
+                    <div className="p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                      <h4 className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">Permissions & Lifecycle</h4>
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormSelect
+                          name="role"
+                          label="Access Level"
+                          options={[
+                            { value: "USER", label: "USER" },
+                            { value: "ADMIN", label: "ADMIN" },
+                          ]}
+                        />
+                        <FormSelect
+                          name="status"
+                          label="Account Status"
+                          options={[
+                            { value: "ACTIVE", label: "ACTIVE" },
+                            { value: "INACTIVE", label: "INACTIVE" },
+                            { value: "PENDING", label: "PENDING" },
+                          ]}
+                        />
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Sticky Drawer Footer */}
+                  <div className="sticky bottom-0 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-150 dark:border-zinc-800 px-6 py-4 flex gap-3 justify-end z-25">
+                    <button
+                      type="button"
+                      onClick={() => setIsFormOpen(false)}
+                      className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold hover:bg-zinc-100 dark:hover:bg-zinc-900 transition text-zinc-700 dark:text-zinc-350 cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={createUserMutation.loading || updateUserMutation.loading}
+                      className="px-5 py-2.5 rounded-xl bg-brand-primary text-white font-bold text-xs hover:bg-primary-hover transition cursor-pointer disabled:opacity-60 flex items-center justify-center min-w-[100px]"
+                    >
+                      {createUserMutation.loading || updateUserMutation.loading ? (
+                        <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      ) : editingUser ? (
+                        "Save Changes"
+                      ) : (
+                        "Create Account"
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </FormProvider>
             </div>
-
-            {/* Drawer Scrollable Content */}
-            <FormProvider {...formMethods}>
-              <form onSubmit={formMethods.handleSubmit(handleFormSubmit)} className="flex-1 flex flex-col justify-between overflow-hidden">
-                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 scrollbar-thin">
-                  
-                  {/* Card Section: General details */}
-                  <div className="p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
-                    <h4 className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">General Information</h4>
-                    <div className="space-y-4">
-                      <FormInput name="name" label="Name" placeholder="John Doe" required />
-                      <FormInput name="email" label="Email Address" placeholder="john@example.com" required />
-                    </div>
-                  </div>
-
-                  {/* Card Section: Security */}
-                  <div className="p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
-                    <h4 className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">Security Credentials</h4>
-                    <FormPasswordInput
-                      name="password"
-                      label={editingUser ? "Change Password (optional)" : "Password"}
-                      placeholder="••••••••"
-                      showStrength={!editingUser}
-                      required={!editingUser}
-                    />
-                  </div>
-
-                  {/* Card Section: Access & Status */}
-                  <div className="p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
-                    <h4 className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">Permissions & Lifecycle</h4>
-                    <div className="grid grid-cols-2 gap-4">
-                      <FormSelect
-                        name="role"
-                        label="Access Level"
-                        options={[
-                          { value: "USER", label: "USER" },
-                          { value: "ADMIN", label: "ADMIN" },
-                        ]}
-                      />
-                      <FormSelect
-                        name="status"
-                        label="Account Status"
-                        options={[
-                          { value: "ACTIVE", label: "ACTIVE" },
-                          { value: "INACTIVE", label: "INACTIVE" },
-                          { value: "PENDING", label: "PENDING" },
-                        ]}
-                      />
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* Sticky Drawer Footer */}
-                <div className="sticky bottom-0 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-150 dark:border-zinc-800 px-6 py-4 flex gap-3 justify-end z-25">
-                  <button
-                    type="button"
-                    onClick={() => setIsFormOpen(false)}
-                    className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold hover:bg-zinc-100 dark:hover:bg-zinc-900 transition text-zinc-700 dark:text-zinc-350 cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={createUserMutation.loading || updateUserMutation.loading}
-                    className="px-5 py-2.5 rounded-xl bg-brand-primary text-white font-bold text-xs hover:bg-primary-hover transition cursor-pointer disabled:opacity-60 flex items-center justify-center min-w-[100px]"
-                  >
-                    {createUserMutation.loading || updateUserMutation.loading ? (
-                      <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    ) : editingUser ? (
-                      "Save Changes"
-                    ) : (
-                      "Create Account"
-                    )}
-                  </button>
-                </div>
-              </form>
-            </FormProvider>
           </div>
-        </div>
         </Portal>
       )}
 
@@ -459,89 +459,89 @@ export default function UserManagementPage() {
       {isDetailOpen && activeUser && (
         <Portal>
           <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm animate-fadeIn">
-          {/* Overlay Click Target to Close */}
-          <div className="absolute inset-0" onClick={() => setIsDetailOpen(false)} />
+            {/* Overlay Click Target to Close */}
+            <div className="absolute inset-0" onClick={() => setIsDetailOpen(false)} />
 
-          <div className="relative w-full max-w-md h-full bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col justify-between animate-slideInRight z-10">
-            {/* Drawer Header */}
-            <div className="sticky top-0 bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 px-6 py-4 flex justify-between items-center z-25">
-              <div>
-                <h3 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-wider">
-                  User Details Overview
-                </h3>
-                <p className="text-[10px] font-bold text-zinc-450 dark:text-zinc-500 mt-0.5 leading-none">
-                  Detailed inspection of user administrative record.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsDetailOpen(false)}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850 cursor-pointer"
-              >
-                <X className="w-4.5 h-4.5" />
-              </button>
-            </div>
-
-            {/* Scrollable details */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin">
-              
-              <div className="flex flex-col items-center text-center p-6 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
-                <UserAvatar
-                  name={activeUser.name}
-                  imageUrl={activeUser.profileImage?.secure_url}
-                  size="xl"
-                />
-                <div className="space-y-1.5">
-                  <h4 className="text-base font-black text-zinc-900 dark:text-white leading-tight">
-                    {activeUser.name}
-                  </h4>
-                  <p className="text-xs font-bold text-zinc-450 dark:text-zinc-500">{activeUser.email}</p>
+            <div className="relative w-full max-w-md h-full bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col justify-between animate-slideInRight z-10">
+              {/* Drawer Header */}
+              <div className="sticky top-0 bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 px-6 py-4 flex justify-between items-center z-25">
+                <div>
+                  <h3 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-wider">
+                    User Details Overview
+                  </h3>
+                  <p className="text-[10px] font-bold text-zinc-450 dark:text-zinc-500 mt-0.5 leading-none">
+                    Detailed inspection of user administrative record.
+                  </p>
                 </div>
-                <div className="flex gap-2 justify-center">
-                  <StatusBadge status={activeUser.role} />
-                  <StatusBadge status={activeUser.status} />
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsDetailOpen(false)}
+                  className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850 cursor-pointer"
+                >
+                  <X className="w-4.5 h-4.5" />
+                </button>
               </div>
 
-              {/* Data Specifications Section */}
-              <div className="p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
-                <h4 className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">System Metadata</h4>
-                <div className="space-y-3 text-xs leading-none">
-                  <div className="flex justify-between font-semibold">
-                    <span className="text-zinc-400">Account ID:</span>
-                    <span className="text-zinc-700 dark:text-zinc-300 font-mono text-[10px] select-all">
-                      {activeUser._id}
-                    </span>
+              {/* Scrollable details */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin">
+
+                <div className="flex flex-col items-center text-center p-6 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                  <UserAvatar
+                    name={activeUser.name}
+                    imageUrl={activeUser.profileImage?.secure_url}
+                    size="xl"
+                  />
+                  <div className="space-y-1.5">
+                    <h4 className="text-base font-black text-zinc-900 dark:text-white leading-tight">
+                      {activeUser.name}
+                    </h4>
+                    <p className="text-xs font-bold text-zinc-450 dark:text-zinc-500">{activeUser.email}</p>
                   </div>
-                  <div className="flex justify-between font-semibold">
-                    <span className="text-zinc-400">Created Date:</span>
-                    <span className="text-zinc-700 dark:text-zinc-300">
-                      {new Date(activeUser.createdAt).toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="flex justify-between font-semibold">
-                    <span className="text-zinc-400">Last Login:</span>
-                    <span className="text-zinc-700 dark:text-zinc-300">
-                      {activeUser.lastLogin ? new Date(activeUser.lastLogin).toLocaleString() : "Never"}
-                    </span>
+                  <div className="flex gap-2 justify-center">
+                    <StatusBadge status={activeUser.role} />
+                    <StatusBadge status={activeUser.status} />
                   </div>
                 </div>
+
+                {/* Data Specifications Section */}
+                <div className="p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                  <h4 className="text-[10px] font-black uppercase text-zinc-400 dark:text-zinc-500 tracking-wider">System Metadata</h4>
+                  <div className="space-y-3 text-xs leading-none">
+                    <div className="flex justify-between font-semibold">
+                      <span className="text-zinc-400">Account ID:</span>
+                      <span className="text-zinc-700 dark:text-zinc-300 font-mono text-[10px] select-all">
+                        {activeUser._id}
+                      </span>
+                    </div>
+                    <div className="flex justify-between font-semibold">
+                      <span className="text-zinc-400">Created Date:</span>
+                      <span className="text-zinc-700 dark:text-zinc-300">
+                        {new Date(activeUser.createdAt).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between font-semibold">
+                      <span className="text-zinc-400">Last Login:</span>
+                      <span className="text-zinc-700 dark:text-zinc-300">
+                        {activeUser.lastLogin ? new Date(activeUser.lastLogin).toLocaleString() : "Never"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
               </div>
 
-            </div>
-
-            {/* Drawer Sticky Footer */}
-            <div className="sticky bottom-0 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-150 dark:border-zinc-800 px-6 py-4 flex gap-3 justify-end z-25">
-              <button
-                type="button"
-                onClick={() => setIsDetailOpen(false)}
-                className="w-full py-3 rounded-xl border border-zinc-200 dark:border-zinc-850 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition cursor-pointer text-center"
-              >
-                Close Details Panel
-              </button>
+              {/* Drawer Sticky Footer */}
+              <div className="sticky bottom-0 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-150 dark:border-zinc-800 px-6 py-4 flex gap-3 justify-end z-25">
+                <button
+                  type="button"
+                  onClick={() => setIsDetailOpen(false)}
+                  className="w-full py-3 rounded-xl border border-zinc-200 dark:border-zinc-850 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition cursor-pointer text-center"
+                >
+                  Close Details Panel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
         </Portal>
       )}
     </div>

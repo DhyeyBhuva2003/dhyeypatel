@@ -22,6 +22,17 @@ export function useUpdateInquiryStatus(onSuccess?: () => void) {
   );
 }
 
+export function useDeleteInquiryAttachment(onSuccess?: () => void) {
+  return useMutation<Inquiry, string>(
+    (id: string) => inquiriesService.deleteAttachment(id),
+    {
+      onSuccess: () => {
+        if (onSuccess) onSuccess();
+      },
+    }
+  );
+}
+
 export function useDeleteInquiry(onSuccess?: () => void) {
   return useMutation<{ success: boolean }, string>(
     (id: string) => inquiriesService.delete(id),

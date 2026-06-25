@@ -68,6 +68,10 @@ export interface Inquiry {
   subject: string;
   message: string;
   status: "PENDING" | "CONTACTED" | "RESOLVED";
+  attachmentUrl?: string;
+  attachmentName?: string;
+  attachmentSize?: number;
+  attachmentPublicId?: string;
   createdAt: string;
   updatedAt: string;
 }

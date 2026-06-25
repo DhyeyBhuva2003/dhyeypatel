@@ -78,7 +78,10 @@ export default async function Services() {
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {services.map((service, idx) => (
           <FadeIn key={service._id.toString()} direction="up" delay={idx * 0.1}>
-            <div className="p-8 rounded-2xl bg-card-main border border-border-main hover:border-brand-primary/30 hover:scale-[1.02] hover:shadow-xl transition-all duration-300 flex flex-col justify-between shadow-sm min-h-[480px]">
+            <div 
+              id={service.slug}
+              className="p-8 rounded-2xl bg-card-main border border-border-main hover:border-brand-primary/30 hover:scale-[1.02] hover:shadow-xl transition-all duration-300 flex flex-col justify-between shadow-sm min-h-[480px]"
+            >
               <div className="space-y-6">
                 <div className="w-14 h-14 rounded-2xl bg-brand-primary/5 flex items-center justify-center border border-brand-primary/10">
                   {getIconComponent(service.icon)}
@@ -104,11 +107,11 @@ export default async function Services() {
 
               <div className="pt-8 mt-8 border-t border-border-main flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <span className="block text-[10px] text-text-sub uppercase tracking-wider font-bold">Investment</span>
+                  <span className="block text-[10px] text-text-sub uppercase tracking-wider font-bold">Starting at</span>
                   <span className="text-xl font-extrabold text-text-main">{service.price}</span>
                 </div>
                 <Link
-                  href="/contact"
+                  href={`/contact?subject=${encodeURIComponent(`Inquiry regarding ${service.title}`)}`}
                   className="px-5 py-2.5 rounded-xl bg-brand-primary hover:bg-brand-primary/95 text-white font-bold text-xs hover:scale-[1.02] transition"
                 >
                   Get Started
