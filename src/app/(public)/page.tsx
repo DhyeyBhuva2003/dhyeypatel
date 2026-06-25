@@ -115,13 +115,6 @@ export default async function Home() {
           {/* LEFT — Text */}
           <div className="space-y-7 z-10 text-center lg:text-left">
             <FadeIn direction="up" delay={0.1}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-primary/30 bg-brand-primary/8 text-brand-primary dark:text-brand-accent text-xs font-semibold tracking-wide">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                Available for Freelance &amp; Consulting
-              </div>
-            </FadeIn>
-
-            <FadeIn direction="up" delay={0.2}>
               <h1 className="text-5xl sm:text-6xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.08] text-text-main">
                 Architecting{" "}
                 <span className="text-brand-primary">Scalable SaaS</span>
@@ -129,13 +122,13 @@ export default async function Home() {
               </h1>
             </FadeIn>
 
-            <FadeIn direction="up" delay={0.3}>
+            <FadeIn direction="up" delay={0.2}>
               <p className="text-base lg:text-lg text-text-sub leading-relaxed max-w-lg mx-auto lg:mx-0">
                 I build secure, high-performance web applications, tune databases, and orchestrate AI-driven workflows that help businesses scale.
               </p>
             </FadeIn>
 
-            <FadeIn direction="up" delay={0.4}>
+            <FadeIn direction="up" delay={0.3}>
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <Magnetic>
                   <Link
@@ -159,7 +152,7 @@ export default async function Home() {
             </FadeIn>
 
             {/* Stats row */}
-            <FadeIn direction="up" delay={0.55}>
+            <FadeIn direction="up" delay={0.45}>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border-main max-w-lg mx-auto lg:mx-0">
                 {[
                   { icon: <FaBriefcase className="text-brand-primary" size={14} />, value: "25+", label: "Projects Completed" },

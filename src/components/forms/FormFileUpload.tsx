@@ -112,86 +112,80 @@ export const FormFileUpload: React.FC<FormFileUploadProps> = ({
         </span>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-4 items-center">
-        {/* Preview Frame */}
-        <div className="relative group shrink-0 border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full sm:w-36 h-28 flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-950 overflow-hidden p-3 text-center">
-          {currentUrl ? (
-            <>
-              <FileText className="w-8 h-8 text-brand-primary mb-1 animate-pulse" />
-              <span className="text-[9px] font-bold text-zinc-650 dark:text-zinc-350 truncate w-full max-w-[100px]">
-                {currentUrl.split("/").pop() || "Uploaded File"}
-              </span>
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity">
+      <div
+        onDragEnter={handleDrag}
+        onDragOver={handleDrag}
+        onDragLeave={handleDrag}
+        onDrop={handleDrop}
+        className={`w-full border border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all ${
+          dragActive
+            ? "border-brand-primary bg-brand-primary/5"
+            : "border-zinc-200 dark:border-zinc-800 bg-zinc-50/10 dark:bg-zinc-950/2 hover:border-brand-primary/40"
+        }`}
+      >
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          accept={allowedExtensions.join(",")}
+          className="hidden"
+          disabled={uploading}
+        />
+
+        {uploading ? (
+          <div className="flex flex-col items-center justify-center gap-2 py-2">
+            <Loader2 className="w-5 h-5 text-brand-primary animate-spin" />
+            <span className="text-xs font-semibold text-zinc-500">Uploading document...</span>
+          </div>
+        ) : !currentUrl ? (
+          <div className="flex flex-col items-center justify-center gap-1.5 text-center py-1">
+            <UploadCloud className="w-6 h-6 text-zinc-400 dark:text-zinc-550" />
+            <div className="text-xs text-zinc-650 dark:text-zinc-450">
+              Drag &amp; drop document, or{" "}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="text-brand-primary hover:underline font-bold cursor-pointer"
+              >
+                browse
+              </button>
+            </div>
+            <p className="text-[10px] text-zinc-400 dark:text-zinc-500 font-medium">
+              {description}
+            </p>
+          </div>
+        ) : (
+          <div className="w-full flex items-center justify-between gap-3 p-1 rounded-lg">
+            <div className="flex items-center gap-2.5 overflow-hidden">
+              <div className="w-9 h-9 rounded-lg bg-brand-primary/10 flex items-center justify-center shrink-0">
+                <FileText className="w-4.5 h-4.5 text-brand-primary" />
+              </div>
+              <div className="overflow-hidden leading-tight">
+                <span className="block text-xs font-bold text-zinc-800 dark:text-zinc-250 truncate max-w-[150px] sm:max-w-[220px]">
+                  {currentUrl.split("/").pop() || "Uploaded File"}
+                </span>
                 <a
                   href={currentUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white transition cursor-pointer"
-                  title="View Document"
+                  className="text-[10px] text-brand-primary hover:underline font-semibold flex items-center gap-1 mt-0.5"
                 >
-                  <Link className="w-3.5 h-3.5" />
+                  <span>View file</span>
+                  <Link className="w-2.5 h-2.5" />
                 </a>
-                <button
-                  type="button"
-                  onClick={handleRemove}
-                  className="p-1.5 rounded-lg bg-red-600/90 text-white hover:bg-red-650 transition cursor-pointer"
-                  title="Remove"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
               </div>
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center text-zinc-400 p-2">
-              <FileText className="w-6 h-6 mb-1 text-zinc-300 dark:text-zinc-700" />
-              <span className="text-[9px] font-semibold">No Document</span>
             </div>
-          )}
 
-          {uploading && (
-            <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white gap-2">
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span className="text-[9px] font-bold uppercase tracking-wider">Uploading</span>
-            </div>
-          )}
-        </div>
-
-        {/* Drag & Drop Area */}
-        <div
-          onDragEnter={handleDrag}
-          onDragOver={handleDrag}
-          onDragLeave={handleDrag}
-          onDrop={handleDrop}
-          className={`flex-1 w-full border-2 border-dashed rounded-2xl p-5 text-center transition flex flex-col items-center justify-center gap-1.5 select-none ${
-            dragActive
-              ? "border-brand-primary bg-primary-glow"
-              : "border-zinc-200 dark:border-zinc-800 hover:border-brand-primary hover:bg-zinc-50/20 dark:hover:bg-zinc-950/20"
-          }`}
-        >
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            accept={allowedExtensions.join(",")}
-            className="hidden"
-            disabled={uploading}
-          />
-          <UploadCloud className="w-6 h-6 text-zinc-400" />
-          <div className="text-xs font-semibold text-zinc-500">
-            Drag & drop document, or{" "}
             <button
               type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-              className="text-brand-primary hover:underline font-bold cursor-pointer disabled:opacity-50"
+              onClick={handleRemove}
+              className="p-1.5 rounded-lg text-zinc-450 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer transition-colors"
+              title="Remove File"
             >
-              browse
+              <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>
-          <p className="text-[10px] text-zinc-400 dark:text-zinc-500 font-medium">
-            {description}
-          </p>
-        </div>
+        )}
       </div>
 
       {errorMessage && (
