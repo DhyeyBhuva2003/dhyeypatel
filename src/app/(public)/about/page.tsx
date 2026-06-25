@@ -27,28 +27,30 @@ export default function About() {
       skills: ["Autonomous AI Agents", "LLM Integrations (OpenAI, Gemini)", "LangChain", "Vector Databases", "Prompt Engineering"],
     },
   ];
-
   const timelineEvents = [
     {
       type: "work",
-      title: "Staff Software Engineer & Consultant",
-      organization: "Freelance & Consulting",
-      date: "2024 - Present",
-      description: "Helping startups ship MVPs, optimizing slow database query pipelines, and integrating intelligent AI agents to automate business workflows.",
+      title: "MERN Stack Developer",
+      organization: "B Creative Solutions",
+      date: "Dec 2025 - Present",
+      description:
+        "Developing enterprise-grade ERP, CRM, and POS systems using Next.js, React.js, Node.js, and PostgreSQL. Building scalable APIs, role-based access control, authentication, inventory management, billing, reporting modules, and integrating third-party services to deliver high-performance business applications.",
     },
     {
       type: "work",
-      title: "Senior Full-Stack Engineer",
-      organization: "Tech Innovators Lab",
-      date: "2022 - 2024",
-      description: "Lead developer on SaaS workspace products. Architected Next.js pages, optimized Mongoose models, and lowered server overheads by 30%.",
+      title: "MERN Stack Developer",
+      organization: "Alliedge Technologies Pvt Ltd",
+      date: "Jun 2024 - Nov 2025",
+      description:
+        "Progressed from Backend Developer Intern to MERN Stack Developer, building secure REST APIs, authentication systems, scalable backend architectures, and full-stack applications using Node.js, Express.js, MongoDB, Next.js, React.js, AWS, GCP, and Nginx while collaborating on production-ready solutions.",
     },
     {
       type: "education",
-      title: "Bachelor of Technology in Computer Science",
-      organization: "Gujarat Technological University",
-      date: "2019 - 2023",
-      description: "Specialized in software architectures, web technologies, database indexing, and distributed systems algorithms.",
+      title: "Bachelor of Engineering (Information Technology)",
+      organization: "Government Engineering College, Modasa",
+      date: "Sep 2021 - May 2025",
+      description:
+        "Graduated with a CGPA of 7.72 (CPI 7.60). Specialized in Full Stack Development, Backend Engineering, Database Systems, and Software Engineering. SSIP Grand Finale 2023 Finalist and active participant in SUDO 2K24 and various technical innovation events.",
     },
   ];
 
@@ -77,18 +79,18 @@ export default function About() {
                 About Dhyey Bhuva
               </h1>
               <p className="text-lg font-bold text-brand-primary">
-                Staff Engineer, Architect, and Tech Content Writer
+                MERN Stack Developer • Full-Stack Engineer • Backend Specialist
               </p>
             </div>
           </FadeIn>
           <FadeIn direction="up" delay={0.1}>
             <p className="text-text-sub leading-relaxed text-base md:text-lg">
-              I am a results-oriented software engineer specializing in building modern web platforms that convert visitors into clients. My philosophy revolves around clean code architecture, absolute security, and high performance.
+              I'm a passionate MERN Stack Developer focused on building scalable, secure, and high-performance web applications. I specialize in Next.js, React.js, Node.js, Express.js, MongoDB, and PostgreSQL, creating enterprise solutions including ERP, CRM, POS, and custom business applications.
             </p>
           </FadeIn>
           <FadeIn direction="up" delay={0.15}>
             <p className="text-text-sub leading-relaxed text-base">
-              Over the past few years, I&apos;ve worked with several startup founders to design, build, and scale their MVP ideas. Beyond writing code, I publish technical blogs on Next.js 16 APIs and database indexing to help developers sharpen their skill sets.
+              I enjoy solving real-world problems through clean architecture, modern technologies, and user-focused experiences while continuously learning and sharing knowledge with the developer community.
             </p>
           </FadeIn>
           <FadeIn direction="up" delay={0.2}>

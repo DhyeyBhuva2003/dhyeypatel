@@ -219,14 +219,16 @@ function ContactForm() {
       {/* Main Grid */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
         {/* Contact Info (left column) */}
-        <div className="lg:col-span-5 space-y-8 flex flex-col justify-between">
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
-              Connect With Me
-            </h2>
-            <p className="text-sm text-zinc-500 dark:text-zinc-450 leading-relaxed">
-              If you prefer traditional channels or want to check out my professional credentials, feel free to use the reference details below.
-            </p>
+        <div className="lg:col-span-5">
+          <div className="p-8 rounded-3xl bg-zinc-50/50 dark:bg-zinc-900/10 border border-zinc-200/50 dark:border-zinc-850 h-full flex flex-col justify-center space-y-6">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
+                Connect With Me
+              </h2>
+              <p className="text-sm text-zinc-555 dark:text-zinc-400 leading-relaxed">
+                If you prefer traditional channels or want to check out my professional credentials, feel free to use the reference details below.
+              </p>
+            </div>
 
             {/* Cards */}
             <div className="space-y-4">
@@ -261,35 +263,10 @@ function ContactForm() {
                 <div className="space-y-0.5">
                   <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">Location</h4>
                   <p className="text-sm text-zinc-700 dark:text-zinc-300 font-medium">
-                    Ahmedabad, Gujarat, India (Remote Available Globally)
+                    Ahmedabad, Gujarat, India
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Social connections */}
-          <div className="space-y-4 pt-6 lg:pt-0">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400">
-              Social Portals
-            </h3>
-            <div className="flex gap-4">
-              <a
-                href="https://linkedin.com/in/dhyeybhuva/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition"
-              >
-                <FaLinkedin className="text-[#0077b5]" /> LinkedIn
-              </a>
-              <a
-                href="https://github.com/dhyeybhuva2003"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-5 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition"
-              >
-                <FaGithub /> GitHub
-              </a>
             </div>
           </div>
         </div>
@@ -402,9 +379,9 @@ function ContactForm() {
                     onDragOver={handleDrag}
                     onDragLeave={handleDrag}
                     onDrop={handleDrop}
-                    className={`w-full border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center transition-all ${dragActive
-                      ? "border-purple-600 bg-purple-50/50 dark:bg-purple-950/10"
-                      : "border-zinc-200 dark:border-zinc-800 bg-zinc-50/30 dark:bg-zinc-950/5 hover:border-zinc-350 dark:hover:border-zinc-700"
+                    className={`w-full border border-dashed rounded-xl p-4 flex flex-col items-center justify-center transition-all ${dragActive
+                      ? "border-purple-650 bg-purple-50/20 dark:bg-purple-950/5"
+                      : "border-zinc-200 dark:border-zinc-800 bg-zinc-50/10 dark:bg-zinc-950/2 hover:border-purple-600/40"
                       }`}
                   >
                     <input
@@ -416,39 +393,41 @@ function ContactForm() {
                     />
 
                     {!selectedFile ? (
-                      <div className="text-center space-y-2.5">
-                        <FaCloudUploadAlt className="w-10 h-10 text-zinc-400 dark:text-zinc-550 mx-auto" />
-                        <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
-                          Drag &amp; Drop your document here, or
+                      <div className="flex flex-col items-center justify-center gap-1.5 text-center py-1">
+                        <FaCloudUploadAlt className="w-6 h-6 text-zinc-400 dark:text-zinc-550" />
+                        <div className="text-xs text-zinc-650 dark:text-zinc-450">
+                          Drag &amp; drop document, or{" "}
+                          <button
+                            type="button"
+                            onClick={() => document.getElementById("file-upload")?.click()}
+                            className="text-purple-600 dark:text-purple-400 hover:underline font-bold cursor-pointer"
+                          >
+                            browse
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => document.getElementById("file-upload")?.click()}
-                          className="px-4 py-2 rounded-xl border border-zinc-250 dark:border-zinc-850 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-850 text-xs font-bold text-zinc-700 dark:text-zinc-350 cursor-pointer shadow-sm"
-                        >
-                          Browse File
-                        </button>
-                        <p className="text-[9px] font-medium text-zinc-450 dark:text-zinc-550 pt-1 leading-none">
-                          PDF, DOC, XLS, PPT, TXT or Images up to 10MB
+                        <p className="text-[10px] text-zinc-400 dark:text-zinc-500 font-medium">
+                          PDF, Word, Excel, PPT, TXT or Images up to 10MB
                         </p>
                       </div>
                     ) : (
-                      <div className="w-full flex items-center justify-between gap-4 p-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-850 shadow-sm">
-                        <div className="flex items-center gap-3 overflow-hidden">
+                      <div className="w-full flex items-center justify-between gap-3 p-2.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-850">
+                        <div className="flex items-center gap-2.5 overflow-hidden">
                           {previewUrl ? (
                             <img
                               src={previewUrl}
                               alt="Upload preview"
-                              className="w-12 h-12 rounded-lg object-cover border border-zinc-150 dark:border-zinc-800 shrink-0"
+                              className="w-9 h-9 rounded-md object-cover border border-zinc-150 dark:border-zinc-800 shrink-0"
                             />
                           ) : (
-                            getFileIcon(selectedFile.name)
+                            <div className="shrink-0 scale-90 origin-left">
+                              {getFileIcon(selectedFile.name)}
+                            </div>
                           )}
                           <div className="overflow-hidden leading-tight">
-                            <span className="block text-xs font-bold text-zinc-800 dark:text-zinc-250 truncate">
+                            <span className="block text-xs font-bold text-zinc-800 dark:text-zinc-250 truncate max-w-[150px] sm:max-w-[220px]">
                               {selectedFile.name}
                             </span>
-                            <span className="text-[10px] font-semibold text-zinc-400 mt-0.5 block">
+                            <span className="text-[9.5px] font-semibold text-zinc-400 mt-0.5 block">
                               {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                             </span>
                           </div>
@@ -457,7 +436,7 @@ function ContactForm() {
                         <button
                           type="button"
                           onClick={removeFile}
-                          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+                          className="p-1.5 rounded-lg text-zinc-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer transition-colors"
                           title="Remove File"
                         >
                           <FaTimes className="w-3.5 h-3.5" />
