@@ -4,7 +4,8 @@ import React, { useState, useMemo } from "react";
 import { useForm, FormProvider, Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ConciergeBell, Plus, X, Code, Rocket, Server, Database } from "lucide-react";
+import { ConciergeBell, Plus, X } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { Toaster } from "sonner";
 
 import { useServices, useCreateService, useUpdateService, useDeleteService } from "@/hooks/useServices";
@@ -28,20 +29,48 @@ const serviceFormSchema = z.object({
 
 type ServiceFormData = z.infer<typeof serviceFormSchema>;
 
+// Helper to map icon string to Lucide icon dynamically for admin dashboard rendering
 function getIcon(iconName: string) {
-  switch (iconName) {
-    case "FaCode":
-    case "Code":
-      return <Code className="w-4 h-4 text-brand-primary" />;
-    case "FaRocket":
-    case "Rocket":
-      return <Rocket className="w-4 h-4 text-brand-primary" />;
-    case "FaServer":
-    case "Server":
-      return <Server className="w-4 h-4 text-brand-primary" />;
-    default:
-      return <Database className="w-4 h-4 text-brand-primary" />;
+  if (!iconName) {
+    return <LucideIcons.Database className="w-4 h-4 text-brand-primary" />;
   }
+
+  let normalized = iconName;
+  if (iconName.startsWith("Fa")) {
+    normalized = iconName.slice(2);
+  }
+  
+  // Try exact match first in Lucide Icons
+  let LucideIcon = (LucideIcons as any)[normalized];
+  
+  // Fallback patterns for common Font Awesome variants to Lucide equivalents
+  if (!LucideIcon) {
+    const lower = normalized.toLowerCase();
+    if (lower.includes("laptop") || lower.includes("computer") || lower.includes("desktop")) {
+      LucideIcon = LucideIcons.Laptop;
+    } else if (lower.includes("mobile") || lower.includes("phone") || lower.includes("smartphone")) {
+      LucideIcon = LucideIcons.Smartphone;
+    } else if (lower.includes("robot") || lower.includes("bot") || lower.includes("ai")) {
+      LucideIcon = LucideIcons.Bot;
+    } else if (lower.includes("user") || lower.includes("people") || lower.includes("group")) {
+      LucideIcon = LucideIcons.Users;
+    } else if (lower.includes("building") || lower.includes("office") || lower.includes("company")) {
+      LucideIcon = LucideIcons.Building;
+    } else if (lower.includes("cart") || lower.includes("shop") || lower.includes("bag")) {
+      LucideIcon = LucideIcons.ShoppingCart;
+    } else if (lower.includes("code") || lower.includes("program")) {
+      LucideIcon = LucideIcons.Code;
+    } else if (lower.includes("rocket") || lower.includes("launch")) {
+      LucideIcon = LucideIcons.Rocket;
+    } else if (lower.includes("server") || lower.includes("cloud") || lower.includes("hosting")) {
+      LucideIcon = LucideIcons.Server;
+    }
+  }
+
+  if (LucideIcon) {
+    return <LucideIcon className="w-4 h-4 text-brand-primary" />;
+  }
+  return <LucideIcons.Database className="w-4 h-4 text-brand-primary" />;
 }
 
 export default function AdminServices() {
@@ -279,7 +308,7 @@ export default function AdminServices() {
                         <FormInput
                           name="icon"
                           label="Display Icon name"
-                          placeholder="Code, Rocket, Server, FaCode..."
+                          placeholder="FaShoppingCart, FaBuilding, FaUsers, FaCode..."
                           required
                         />
                         <FormInput name="price" label="Pricing Estimate" placeholder="Starting at $2,000" required />

@@ -635,53 +635,101 @@ Study Mitram International acts as a digital bridge for students seeking study v
 
 const SERVICES = [
   {
-    title: "Full-Stack Web Development",
-    description: "End-to-end custom application development, taking your ideas from Figma mockups to high-performing production deployments.",
-    icon: "FaCode",
+    slug: "ecommerce-development",
+    title: "E-Commerce Website Development",
+    description: "Build scalable, high-performance e-commerce platforms with secure payments, inventory management, customer accounts, and an optimized shopping experience for businesses of any size.",
     features: [
-      "Modern Next.js & React Frontend",
-      "Robust Node.js & Express REST/GraphQL APIs",
-      "Secure MongoDB/PostgreSQL schemas",
-      "JWT and Session Authentication",
-      "Responsive, mobile-first design",
-      "SEO-ready page architectures",
+      "Custom Shopping Cart & Checkout",
+      "Razorpay & Stripe Payment Gateway",
+      "Product & Inventory Management",
+      "Order & Shipping Management",
+      "Wishlist & Product Reviews",
+      "SEO & Performance Optimization"
     ],
-    price: "$1,500+",
-    slug: "full-stack-web-development",
+    icon: "FaShoppingCart",
     order: 1,
+    price: "₹ 2,50,000"
   },
   {
-    title: "SaaS MVP Development",
-    description: "Rapid development of a clean, functional Minimum Viable Product so you can validate your SaaS concept with real customers quickly.",
-    icon: "FaRocket",
+    slug: "erp-software-development",
+    title: "Custom ERP Software Development",
+    description: "Develop enterprise-grade ERP solutions to manage HR, inventory, accounting, procurement, manufacturing, and business operations from a centralized platform.",
     features: [
-      "Interactive wireframes and prototypes",
-      "User Registration & Social Auth",
-      "Stripe subscription integration",
-      "Basic administration dashboard",
-      "Email notification templates",
-      "Deployment to Vercel/AWS in 4 weeks",
+      "HR & Employee Management",
+      "Inventory & Warehouse Management",
+      "Purchase & Sales Management",
+      "Finance & Accounting Modules",
+      "Reports & Business Analytics",
+      "Role-Based Access Control"
     ],
-    price: "$3,000+",
-    slug: "saas-mvp-development",
+    icon: "FaBuilding",
     order: 2,
+    price: "₹ 8,50,000"
   },
   {
-    title: "Database & Backend Optimization",
-    description: "Auditing and refactoring slow server architectures, optimizing queries, caching structures, and ensuring strict security protocols.",
-    icon: "FaServer",
+    slug: "crm-software-development",
+    title: "CRM Software Development",
+    description: "Create powerful CRM platforms to manage leads, customers, sales pipelines, marketing campaigns, and customer support with automation and analytics.",
     features: [
-      "Database indexing & aggregation optimization",
-      "Redis caching layer integrations",
-      "Zod validation & API security hardening",
-      "Serverless functions tuning",
-      "Rate limiting & security header configs",
-      "Detailed performance profiling reports",
+      "Lead & Contact Management",
+      "Sales Pipeline Tracking",
+      "Customer Support Tickets",
+      "Marketing Automation",
+      "Email & WhatsApp Integration",
+      "Sales Reports & Analytics"
     ],
-    price: "$800+",
-    slug: "backend-optimization",
+    icon: "FaUsers",
     order: 3,
+    price: "₹ 4,50,000"
   },
+  {
+    slug: "custom-business-software",
+    title: "Custom Business Software",
+    description: "Design and develop fully customized business software tailored to your company's workflows, operations, and digital transformation requirements.",
+    features: [
+      "Workflow Automation",
+      "Role-Based Permissions",
+      "Business Process Management",
+      "Cloud-Based Architecture",
+      "API & Third-Party Integrations",
+      "Real-Time Dashboard & Reports"
+    ],
+    icon: "FaLaptopCode",
+    order: 4,
+    price: "₹ 6,00,000"
+  },
+  {
+    slug: "mobile-app-development",
+    title: "Cross-Platform Mobile App Development",
+    description: "Develop modern Android and iOS applications using Flutter or React Native with secure APIs, real-time features, and scalable backend architecture.",
+    features: [
+      "Android & iOS Development",
+      "REST API Integration",
+      "Firebase Push Notifications",
+      "Offline Data Synchronization",
+      "Authentication & Security",
+      "Google Play & App Store Deployment"
+    ],
+    icon: "FaMobileAlt",
+    order: 5,
+    price: "₹ 3,80,000"
+  },
+  {
+    slug: "ai-automation-solutions",
+    title: "AI Automation & Business Solutions",
+    description: "Automate business operations with AI-powered chatbots, workflow automation, document processing, analytics, and intelligent decision-making systems.",
+    features: [
+      "AI Chatbot Development",
+      "Workflow Automation",
+      "Document Processing",
+      "AI Analytics Dashboard",
+      "OpenAI & Gemini API Integration",
+      "Business Intelligence Reports"
+    ],
+    icon: "FaRobot",
+    order: 6,
+    price: "₹ 5,50,000"
+  }
 ];
 
 async function main() {
