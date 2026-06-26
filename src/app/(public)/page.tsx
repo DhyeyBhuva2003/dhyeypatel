@@ -440,45 +440,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 6. Action Form Section */}
-      <section className="max-w-[1200px] mx-auto px-6">
-        <FadeIn direction="up">
-          <div className="relative overflow-hidden rounded-3xl bg-zinc-950 text-white p-8 sm:p-12 md:p-16 border border-zinc-800 shadow-2xl flex flex-col md:flex-row items-center gap-12">
-            {/* Background Gradient Orbs */}
-            <div className="absolute top-0 right-0 w-80 h-80 bg-brand-primary/10 rounded-full blur-3xl -z-10"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand-accent/10 rounded-full blur-3xl -z-10"></div>
-
-            <div className="flex-1 space-y-4 text-center md:text-left">
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
-                Ready to accelerate your product development?
-              </h2>
-              <p className="text-sm text-zinc-400 leading-relaxed max-w-md">
-                Let&apos;s build high-throughput dashboards, clean integrations, or robust AI agent automation together.
-              </p>
-              <div className="flex justify-center md:justify-start pt-2">
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-zinc-950 bg-white hover:bg-zinc-100 transition duration-300 hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  <span>Initiate a Project</span>
-                  <FaArrowRight size={12} />
-                </Link>
-              </div>
-            </div>
-
-            <div className="w-full md:w-80 p-6 rounded-2xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-sm space-y-4">
-              <h3 className="text-sm font-bold tracking-tight">Direct Inquiry</h3>
-              <p className="text-xs text-zinc-400">Submit a quick message to get a response within 24 hours.</p>
-              <Link
-                href="/contact"
-                className="w-full inline-flex justify-center items-center py-2.5 rounded-xl text-xs font-bold text-white bg-brand-primary hover:bg-brand-primary/90 transition hover:scale-[1.02]"
-              >
-                Contact Form
-              </Link>
-            </div>
-          </div>
-        </FadeIn>
-      </section>
     </div>
   );
 }

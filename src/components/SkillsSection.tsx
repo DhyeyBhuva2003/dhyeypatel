@@ -111,10 +111,10 @@ const categories = [
 
 // Stats Data
 const stats = [
-  { target: 10, suffix: "+", label: "Projects Completed" },
-  { target: 15, suffix: "+", label: "Technologies" },
-  { target: 2, suffix: "+", label: "Years Learning" },
-  { target: 100, suffix: "%", label: "Responsive Design" }
+  { target: 25, suffix: "+", label: "Projects Completed" },
+  { target: 10, suffix: "+", label: "Technologies" },
+  { target: 15, suffix: "+", label: "Happy Clients" },
+  { target: 2, suffix: "+", label: "Years Experience" }
 ];
 
 export default function SkillsSection() {

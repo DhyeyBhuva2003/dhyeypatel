@@ -18,7 +18,7 @@ interface BlogDetailsProps {
 export async function generateMetadata({ params }: BlogDetailsProps) {
   const { slug } = await params;
   const blog = await getBlogBySlug(slug);
-  
+
   if (!blog) {
     return {
       title: "Article Not Found",
@@ -44,7 +44,7 @@ function extractHeadings(content: string) {
   const headingRegex = /^(#{2,3})\s+(.*)$/gm;
   const headings = [];
   let match;
-  
+
   while ((match = headingRegex.exec(content)) !== null) {
     const level = match[1].length; // 2 for ##, 3 for ###
     const text = match[2].trim();
@@ -55,7 +55,7 @@ function extractHeadings(content: string) {
       .replace(/[^\w\-]+/g, "");
     headings.push({ level, text, id });
   }
-  
+
   return headings;
 }
 
@@ -111,13 +111,13 @@ export default async function BlogDetails({ params }: BlogDetailsProps) {
               </span>
             </div>
           </FadeIn>
-          
+
           <FadeIn direction="up" delay={0.1}>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-text-main leading-tight tracking-tight">
               {blog.title}
             </h1>
           </FadeIn>
-          
+
           <FadeIn direction="up" delay={0.15}>
             <p className="text-base sm:text-lg text-text-sub leading-relaxed font-normal">
               {blog.description}
@@ -135,12 +135,6 @@ export default async function BlogDetails({ params }: BlogDetailsProps) {
                 <div className="flex items-center gap-1.5">
                   <FaClock className="text-brand-primary/80 dark:text-brand-accent/80" />
                   <span>{blog.readTime}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="font-bold text-text-sub">Engine:</span>
-                  <span className="capitalize px-2 py-0.5 rounded bg-bg-sub border border-border-main text-[10px]">
-                    {blog.source === "file" ? "Markdown File" : "Database"}
-                  </span>
                 </div>
               </div>
 
@@ -190,9 +184,8 @@ export default async function BlogDetails({ params }: BlogDetailsProps) {
                       <a
                         key={idx}
                         href={`#${heading.id}`}
-                        className={`block text-xs font-semibold text-text-sub hover:text-brand-primary transition duration-200 ${
-                          heading.level === 3 ? "pl-3.5 border-l border-border-main" : ""
-                        }`}
+                        className={`block text-xs font-semibold text-text-sub hover:text-brand-primary transition duration-200 ${heading.level === 3 ? "pl-3.5 border-l border-border-main" : ""
+                          }`}
                       >
                         {heading.text}
                       </a>
