@@ -4,6 +4,7 @@ import Inquiry from "@/models/Inquiry";
 import { getCurrentAdmin } from "@/lib/auth";
 import { inquirySchema } from "@/lib/validation";
 import { uploadFileBuffer } from "@/lib/cloudinary";
+import { sendOwnerInquiryEmail, sendUserConfirmationEmail } from "@/lib/email";
 import path from "path";
 
 export async function GET() {
@@ -176,6 +177,33 @@ export async function POST(request: Request) {
       attachmentPublicId,
       status: "PENDING",
     });
+
+    // 4. Send Emails (Gracefully handled to prevent database rollback on email failure)
+    try {
+      await sendOwnerInquiryEmail({
+        name: validatedData.name,
+        email: validatedData.email,
+        subject: validatedData.subject,
+        message: validatedData.message,
+        attachmentUrl,
+        attachmentName,
+      });
+    } catch (emailErr) {
+      console.error("Failed to send notification email to owner:", emailErr);
+    }
+
+    try {
+      await sendUserConfirmationEmail({
+        name: validatedData.name,
+        email: validatedData.email,
+        subject: validatedData.subject,
+        message: validatedData.message,
+        attachmentUrl,
+        attachmentName,
+      });
+    } catch (emailErr) {
+      console.error("Failed to send confirmation email to user:", emailErr);
+    }
 
     return NextResponse.json(
       {
