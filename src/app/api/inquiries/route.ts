@@ -4,8 +4,12 @@ import Inquiry from "@/models/Inquiry";
 import { getCurrentAdmin } from "@/lib/auth";
 import { inquirySchema } from "@/lib/validation";
 import { uploadFileBuffer } from "@/lib/cloudinary";
-import { sendOwnerInquiryEmail, sendUserConfirmationEmail } from "@/lib/email";
 import path from "path";
+import Subscriber from "@/models/Subscriber";
+import BrandSetting from "@/models/BrandSetting";
+import EmailTemplate from "@/models/EmailTemplate";
+import { getEmailQueue } from "@/lib/queue/emailQueue";
+import { compileEmailHtml, interpolateVariables } from "@/lib/emails/renderer";
 
 export async function GET() {
   try {
@@ -167,6 +171,9 @@ export async function POST(request: Request) {
       attachmentPublicId = uploadResult.public_id;
     }
 
+    // Generate a unique Reference ID
+    const referenceId = `INQ-${Math.floor(100000 + Math.random() * 900000)}`;
+
     // 3. Save to Database
     await connectToDatabase();
     const inquiry = await Inquiry.create({
@@ -175,34 +182,97 @@ export async function POST(request: Request) {
       attachmentName,
       attachmentSize,
       attachmentPublicId,
+      referenceId,
       status: "PENDING",
     });
 
-    // 4. Send Emails (Gracefully handled to prevent database rollback on email failure)
-    try {
-      await sendOwnerInquiryEmail({
-        name: validatedData.name,
-        email: validatedData.email,
-        subject: validatedData.subject,
-        message: validatedData.message,
-        attachmentUrl,
-        attachmentName,
+    // Optionally Create Subscriber (Check if subscriber already exists, otherwise create)
+    let subscriber = await Subscriber.findOne({ email: validatedData.email.toLowerCase() });
+    if (!subscriber) {
+      const nameParts = validatedData.name.trim().split(/\s+/);
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+      subscriber = await Subscriber.create({
+        email: validatedData.email.toLowerCase(),
+        firstName,
+        lastName,
+        status: "SUBSCRIBED",
       });
-    } catch (emailErr) {
-      console.error("Failed to send notification email to owner:", emailErr);
     }
 
+    // Load templates & Brand settings
+    const brand = (await BrandSetting.findOne({})) || {
+      brandName: "Dhyey Bhuva Portfolio",
+      supportEmail: "support@dhyeybhuva.tech",
+      replyEmail: "noreply@dhyeybhuva.tech",
+      website: "https://dhyeybhuva.tech",
+      primaryColor: "#4f46e5",
+      secondaryColor: "#475569",
+      accentColor: "#2563eb",
+      copyright: "© Dhyey Bhuva. All rights reserved.",
+      address: "India",
+    };
+
+    const ownerTemplate = await EmailTemplate.findOne({ slug: "contact-inquiry" });
+    const userTemplate = await EmailTemplate.findOne({ slug: "auto-reply" });
+
+    // Enqueue emails (BullMQ)
     try {
-      await sendUserConfirmationEmail({
-        name: validatedData.name,
-        email: validatedData.email,
-        subject: validatedData.subject,
-        message: validatedData.message,
-        attachmentUrl,
-        attachmentName,
+      const emailQueue = getEmailQueue();
+
+      // Compile Owner Email Content
+      const ownerSubjectCompiled = ownerTemplate
+        ? interpolateVariables(ownerTemplate.subject, { inquiry, currentDate: new Date().toLocaleDateString() })
+        : `📩 [Inquiry] ${validatedData.subject || "New Message"} - ${validatedData.name}`;
+
+      const ownerHtml = ownerTemplate
+        ? compileEmailHtml(
+            ownerTemplate.jsonLayout,
+            brand,
+            subscriber,
+            { subject: validatedData.subject, name: validatedData.name },
+            { inquiry }
+          )
+        : `<h3>New Inquiry</h3><p><strong>Name:</strong> ${validatedData.name}</p><p><strong>Email:</strong> ${validatedData.email}</p><p><strong>Message:</strong> ${validatedData.message}</p>`;
+
+      await emailQueue.add("send-email", {
+        recipientEmail: process.env.CONTACT_RECEIVER_EMAIL || brand.supportEmail || "dhyeybhuva2003@gmail.com",
+        subject: ownerSubjectCompiled,
+        htmlContent: ownerHtml,
+        campaignId: undefined,
+        subscriberId: subscriber._id.toString(),
+        senderName: "Inquiry Form",
+        replyTo: validatedData.email,
       });
-    } catch (emailErr) {
-      console.error("Failed to send confirmation email to user:", emailErr);
+
+      // Compile User Confirmation Content
+      const userSubjectCompiled = userTemplate
+        ? interpolateVariables(userTemplate.subject, { inquiry, currentDate: new Date().toLocaleDateString() })
+        : "Inquiry Confirmation - Dhyey Bhuva";
+
+      const userHtml = userTemplate
+        ? compileEmailHtml(
+            userTemplate.jsonLayout,
+            brand,
+            subscriber,
+            { subject: validatedData.subject, name: validatedData.name },
+            { inquiry }
+          )
+        : `<h3>Confirmation</h3><p>Dear ${validatedData.name}, your message has been received.</p>`;
+
+      await emailQueue.add("send-email", {
+        recipientEmail: validatedData.email.toLowerCase(),
+        subject: userSubjectCompiled,
+        htmlContent: userHtml,
+        campaignId: undefined,
+        subscriberId: subscriber._id.toString(),
+        senderName: brand.brandName || "Dhyey Bhuva",
+        replyTo: brand.replyEmail || "noreply@dhyeybhuva.tech",
+      });
+
+      console.log(`[InquiryRoute] Successfully enqueued emails for reference ${referenceId}`);
+    } catch (queueErr) {
+      console.error("[InquiryRoute] Failed to enqueue emails:", queueErr);
     }
 
     return NextResponse.json(

@@ -10,7 +10,7 @@ import Link from "next/link";
 import { z } from "zod";
 import FormInput from "@/components/forms/FormInput";
 import FormPasswordInput from "@/components/forms/FormPasswordInput";
-import FormCheckbox from "@/components/forms/FormCheckbox";
+// import FormCheckbox from "@/components/forms/FormCheckbox";
 
 const loginFormSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address").toLowerCase().trim(),
@@ -102,17 +102,6 @@ function LoginForm() {
             showStrength={true}
           />
 
-          {/* Remember Me and Forgot Password */}
-          <div className="flex items-center justify-between pt-1">
-            <FormCheckbox name="rememberMe" label="Remember me" />
-            <Link
-              href="/forgot-password"
-              className="text-[10px] font-bold text-brand-primary hover:underline uppercase tracking-wide"
-            >
-              Forgot Password?
-            </Link>
-          </div>
-
           {/* Submit */}
           <button
             type="submit"
@@ -130,16 +119,6 @@ function LoginForm() {
           </button>
         </form>
       </FormProvider>
-
-      {/* Auxiliary Footer links */}
-      <div className="flex justify-between items-center pt-4 border-t border-zinc-100 dark:border-zinc-850 text-[10px] font-bold uppercase tracking-wide text-zinc-400">
-        <Link href="/register" className="hover:text-brand-primary">
-          Create Account
-        </Link>
-        <Link href="/" className="hover:text-brand-primary">
-          Public Site
-        </Link>
-      </div>
     </div>
   );
 }
@@ -149,7 +128,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-black p-6 relative select-none">
       <Toaster position="top-right" richColors />
       <div className="absolute inset-0 bg-gradient-to-tr from-brand-primary/5 to-brand-accent/5 -z-10"></div>
-      
+
       <Suspense
         fallback={
           <div className="w-full max-w-md p-8 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-850 shadow-2xl flex flex-col items-center justify-center py-20 gap-3">

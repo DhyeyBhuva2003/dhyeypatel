@@ -10,6 +10,7 @@ import {
   FileText,
   Inbox,
   Settings,
+  Mail,
 } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
 import UserAvatar from "@/components/admin/UserAvatar";
@@ -28,6 +29,7 @@ const menuItems = [
   { name: "Services", href: "/admin/services", icon: <ConciergeBell className="w-4 h-4" /> },
   { name: "Blogs", href: "/admin/blogs", icon: <FileText className="w-4 h-4" /> },
   { name: "Inquiries", href: "/admin/inquiries", icon: <Inbox className="w-4 h-4" /> },
+  { name: "Email Platform", href: "/admin/emails", icon: <Mail className="w-4 h-4" /> },
   { name: "Settings", href: "/admin/settings", icon: <Settings className="w-4 h-4" /> },
 ];
 
