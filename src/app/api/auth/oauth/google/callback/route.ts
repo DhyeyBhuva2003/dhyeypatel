@@ -41,7 +41,14 @@ export async function GET(request: Request) {
 
     const clientId = process.env.GOOGLE_CLIENT_ID || "";
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET || "";
-    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/+$/, "");
+    const host = request.headers.get("host");
+    const protocol = host?.includes("localhost") || host?.includes("127.0.0.1") ? "http" : "https";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL 
+      ? process.env.NEXT_PUBLIC_APP_URL.replace(/\/+$/, "")
+      : host 
+        ? `${protocol}://${host}`
+        : "http://localhost:3000";
+
     const redirectUri = `${appUrl}/api/auth/oauth/google/callback`;
 
     // 2. Exchange authorization code for token

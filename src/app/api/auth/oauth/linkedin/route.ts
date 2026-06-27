@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import crypto from "crypto";
 
-export async function GET() {
+export async function GET(request: Request) {
   const state = crypto.randomBytes(20).toString("hex");
 
   const cookieStore = await cookies();
@@ -15,7 +15,14 @@ export async function GET() {
   });
 
   const clientId = process.env.LINKEDIN_CLIENT_ID || "";
-  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/+$/, "");
+  const host = request.headers.get("host");
+  const protocol = host?.includes("localhost") || host?.includes("127.0.0.1") ? "http" : "https";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL 
+    ? process.env.NEXT_PUBLIC_APP_URL.replace(/\/+$/, "")
+    : host 
+      ? `${protocol}://${host}`
+      : "http://localhost:3000";
+
   const redirectUri = `${appUrl}/api/auth/oauth/linkedin/callback`;
 
   const linkedinAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(
