@@ -10,6 +10,7 @@ export interface IInquiry extends Document {
   attachmentName?: string;
   attachmentSize?: number;
   attachmentPublicId?: string;
+  referenceId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,6 +31,7 @@ const InquirySchema = new Schema<IInquiry>(
     attachmentName: { type: String, default: "" },
     attachmentSize: { type: Number, default: 0 },
     attachmentPublicId: { type: String, default: "" },
+    referenceId: { type: String, unique: true, index: true },
   },
   { timestamps: true }
 );

@@ -5,6 +5,7 @@ export interface IUser extends Document {
   email: string;
   password?: string;
   role: "ADMIN" | "USER";
+  provider?: "CREDENTIALS" | "GOOGLE" | "LINKEDIN";
   profileImage?: {
     public_id: string;
     secure_url: string;
@@ -19,8 +20,9 @@ const UserSchema = new Schema<IUser>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
-    password: { type: String, required: true },
+    password: { type: String, required: false },
     role: { type: String, enum: ["ADMIN", "USER"], default: "USER" },
+    provider: { type: String, enum: ["CREDENTIALS", "GOOGLE", "LINKEDIN"], default: "CREDENTIALS" },
     profileImage: {
       public_id: { type: String, default: "" },
       secure_url: { type: String, default: "" },

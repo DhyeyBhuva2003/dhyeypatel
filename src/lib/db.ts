@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { initEmailWorker } from "./queue/emailWorker";
+import { seedDefaultEmailConfig } from "./emails/seeder";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -56,6 +58,17 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
 
   try {
     cached.conn = await cached.promise;
+    // Trigger background email worker initialization
+    if (typeof window === "undefined") {
+      try {
+        initEmailWorker();
+        seedDefaultEmailConfig().catch((err) =>
+          console.error("Failed to seed default email configurations:", err)
+        );
+      } catch (err) {
+        console.error("Failed to initialize BullMQ email worker:", err);
+      }
+    }
   } catch (e) {
     cached.promise = null;
     throw e;
