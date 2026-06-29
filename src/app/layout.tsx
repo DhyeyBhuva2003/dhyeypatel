@@ -16,10 +16,10 @@ export const metadata: Metadata = {
   },
   description:
     "Personal Brand, Portfolio, and Freelance Services platform for Dhyey Bhuva. Custom SaaS MVP builds, backend optimizations, and AI agent automation.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dhyeybhuva.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dhyeybhuva.tech" || "https://dhyeybhuva.netlify.app"),
   openGraph: {
     title: "Dhyey Bhuva | Staff Software Engineer & Solutions Architect",
-    url: "https://dhyeybhuva.com",
+    url: "https://dhyeybhuva.tech",
     siteName: "Dhyey Bhuva Portfolio",
     locale: "en_US",
     type: "website",
@@ -44,6 +44,9 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/site.webmanifest",
+  verification: {
+    google: "eY-W9xR-7MUL41WZVc-X_ooLdanoMTcdhDGzsHYn6EU",
+  },
 };
 
 export default function RootLayout({
