@@ -2,8 +2,8 @@
  * Returns the Google JSON-LD schema for a Person representation (Portfolio Homepage).
  */
 export function getPersonSchema() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dhyeybhuva.com";
-  
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dhyeybhuva.tech";
+
   return {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -13,6 +13,7 @@ export function getPersonSchema() {
     "sameAs": [
       "https://github.com/DhyeyBhuva2003",
       "https://www.linkedin.com/in/dhyeybhuva/",
+      "https://www.upwork.com/freelancers/~01d4c44951f41c2c1d",
     ],
     "jobTitle": "Staff Software Engineer & Solutions Architect",
     "knowsAbout": [

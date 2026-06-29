@@ -10,6 +10,7 @@ import { getBlogPostingSchema } from "@/lib/seo";
 import ReadingProgressBar from "@/components/ReadingProgressBar";
 import ShareButtons from "@/components/ShareButtons";
 import FadeIn from "@/components/FadeIn";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 interface BlogDetailsProps {
   params: Promise<{ slug: string }>;
@@ -81,6 +82,7 @@ export default async function BlogDetails({ params }: BlogDetailsProps) {
 
   return (
     <div className="min-h-screen bg-bg-main text-text-main pb-24 transition-colors duration-250">
+      <AnalyticsTracker type="blog" params={{ slug: blog.slug, name: blog.title }} />
       {/* Scroll-Linked Reading Progress Bar */}
       <ReadingProgressBar />
 

@@ -23,6 +23,11 @@ import {
   FaFileAlt,
   FaFile
 } from "react-icons/fa";
+import {
+  trackContactFormSubmit,
+  trackEmailClick,
+  trackPhoneClick
+} from "@/lib/analytics";
 
 // Zod Validation Schema for Text Fields
 const contactFormSchema = z.object({
@@ -188,6 +193,7 @@ function ContactForm() {
         setIsSuccess(true);
         setSelectedFile(null);
         setPreviewUrl(null);
+        trackContactFormSubmit("contact_page");
         reset();
       } else {
         toast.error(response.data.message || "Failed to submit inquiry.");
@@ -238,6 +244,7 @@ function ContactForm() {
                   <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">Email</h4>
                   <a
                     href="mailto:dhyeybhuva2003@gmail.com"
+                    onClick={() => trackEmailClick("dhyeybhuva2003@gmail.com")}
                     className="text-sm text-zinc-700 dark:text-zinc-300 font-medium hover:underline hover:text-purple-600"
                   >
                     dhyeybhuva2003@gmail.com
@@ -251,6 +258,7 @@ function ContactForm() {
                   <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">Phone</h4>
                   <a
                     href="tel:+916355830394"
+                    onClick={() => trackPhoneClick("+916355830394")}
                     className="text-sm text-zinc-700 dark:text-zinc-300 font-medium hover:underline hover:text-purple-600"
                   >
                     +91 6355830394
