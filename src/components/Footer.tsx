@@ -16,6 +16,16 @@ import {
   FaMapMarkerAlt,
   FaCalendarAlt
 } from "react-icons/fa";
+import { SiUpwork } from "react-icons/si";
+import {
+  trackNewsletterSignup,
+  trackEmailClick,
+  trackPhoneClick,
+  trackLinkedInClick,
+  trackGitHubClick,
+  trackYouTubeClick,
+  trackEvent
+} from "@/lib/analytics";
 
 // Register ScrollTrigger plugin on client side
 if (typeof window !== "undefined") {
@@ -24,12 +34,13 @@ if (typeof window !== "undefined") {
 
 // Social Icons Data
 const socialLinks = [
-  { href: "https://github.com/dhyeybhuva2003", icon: <FaGithub size={18} />, label: "GitHub", color: "hover:bg-zinc-800 hover:text-white hover:shadow-zinc-800/25" },
-  { href: "https://linkedin.com/in/dhyeybhuva/", icon: <FaLinkedinIn size={18} />, label: "LinkedIn", color: "hover:bg-blue-600 hover:text-white hover:shadow-blue-600/25" },
-  { href: "https://www.youtube.com/@DhyeyBhuva1008", icon: <FaYoutube size={18} />, label: "YouTube", color: "hover:bg-red-600 hover:text-white hover:shadow-red-600/25" },
-  { href: "https://instagram.com/dhyey_bhuva_003", icon: <FaInstagram size={18} />, label: "Instagram", color: "hover:bg-pink-600 hover:text-white hover:shadow-pink-600/25" },
-  { href: "https://x.com/Dhyey_bhuva", icon: <FaTwitter size={18} />, label: "Twitter", color: "hover:bg-sky-500 hover:text-white hover:shadow-sky-500/25" },
-  { href: "mailto:dhyeybhuva2003@gmail.com", icon: <FaEnvelope size={18} />, label: "Email", color: "hover:bg-brand-primary hover:text-white hover:shadow-brand-primary/25" }
+  { href: "https://github.com/dhyeybhuva2003", icon: <FaGithub size={18} />, label: "GitHub", color: "hover:bg-zinc-800 hover:text-white hover:shadow-zinc-800/25", onClick: () => trackGitHubClick() },
+  { href: "https://linkedin.com/in/dhyeybhuva/", icon: <FaLinkedinIn size={18} />, label: "LinkedIn", color: "hover:bg-blue-600 hover:text-white hover:shadow-blue-600/25", onClick: () => trackLinkedInClick() },
+  { href: "https://www.upwork.com/freelancers/~01d4c44951f41c2c1d?mp_source=share", icon: <SiUpwork size={18} />, label: "Upwork", color: "hover:bg-[#14a800] hover:text-white hover:shadow-[#14a800]/25", onClick: () => trackEvent("upwork_click") },
+  { href: "https://www.youtube.com/@DhyeyBhuva1008", icon: <FaYoutube size={18} />, label: "YouTube", color: "hover:bg-red-600 hover:text-white hover:shadow-red-600/25", onClick: () => trackYouTubeClick() },
+  { href: "https://instagram.com/dhyey_bhuva_003", icon: <FaInstagram size={18} />, label: "Instagram", color: "hover:bg-pink-600 hover:text-white hover:shadow-pink-600/25", onClick: () => trackEvent("instagram_click") },
+  { href: "https://x.com/Dhyey_bhuva", icon: <FaTwitter size={18} />, label: "Twitter", color: "hover:bg-sky-500 hover:text-white hover:shadow-sky-500/25", onClick: () => trackEvent("twitter_click") },
+  { href: "mailto:dhyeybhuva2003@gmail.com", icon: <FaEnvelope size={18} />, label: "Email", color: "hover:bg-brand-primary hover:text-white hover:shadow-brand-primary/25", onClick: () => trackEmailClick("dhyeybhuva2003@gmail.com") }
 ];
 
 
@@ -165,6 +176,7 @@ export default function Footer() {
               <div className="flex gap-2.5">
                 <a
                   href="/api/auth/oauth/google"
+                  onClick={() => trackNewsletterSignup("google")}
                   className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-xl text-xs font-bold text-zinc-700 dark:text-zinc-350 transition cursor-pointer shadow-sm"
                 >
                   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -291,13 +303,21 @@ export default function Footer() {
             <ul className="space-y-3 text-xs sm:text-sm text-text-sub">
               <li className="flex items-center justify-center lg:justify-start gap-2.5">
                 <FaEnvelope className="text-brand-primary shrink-0" size={13} />
-                <a href="mailto:dhyeybhuva2003@gmail.com" className="hover:text-brand-primary transition break-all">
+                <a
+                  href="mailto:dhyeybhuva2003@gmail.com"
+                  onClick={() => trackEmailClick("dhyeybhuva2003@gmail.com")}
+                  className="hover:text-brand-primary transition break-all"
+                >
                   dhyeybhuva2003@gmail.com
                 </a>
               </li>
               <li className="flex items-center justify-center lg:justify-start gap-2.5">
                 <FaPhoneAlt className="text-brand-primary shrink-0" size={13} />
-                <a href="tel:+916355830394" className="hover:text-brand-primary transition">
+                <a
+                  href="tel:+916355830394"
+                  onClick={() => trackPhoneClick("+916355830394")}
+                  className="hover:text-brand-primary transition"
+                >
                   +91 6355830394
                 </a>
               </li>
@@ -333,6 +353,7 @@ export default function Footer() {
               href={social.href}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={social.onClick}
               className={`social-btn p-3 rounded-full bg-zinc-100/60 dark:bg-zinc-900/60 text-text-sub border border-zinc-200/50 dark:border-zinc-800/40 hover:scale-110 hover:-translate-y-0.5 ${social.color} transition-all duration-300 flex items-center justify-center hover:shadow-md cursor-pointer`}
               aria-label={social.label}
             >

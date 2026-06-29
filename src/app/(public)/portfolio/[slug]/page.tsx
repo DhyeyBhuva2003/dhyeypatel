@@ -22,6 +22,7 @@ import Project from "@/models/Project";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import ProjectGallery from "@/components/ProjectGallery";
 import FadeIn from "@/components/FadeIn";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 export const revalidate = 3600;
 
@@ -133,6 +134,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-bg-main text-text-main pb-24 transition-colors duration-250">
+      <AnalyticsTracker type="project" params={{ slug: project.slug, name: project.title }} />
       {/* Top Navigation */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 pt-8">
         <FadeIn direction="up">

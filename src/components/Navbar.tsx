@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { FaBars, FaTimes } from "react-icons/fa";
 import ThemeToggle from "./ThemeToggle";
 import Magnetic from "./Magnetic";
+import { trackHireMeClick } from "@/lib/analytics";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -103,6 +104,7 @@ export default function Navbar() {
           <Magnetic>
             <Link
               href="/contact"
+              onClick={() => trackHireMeClick("navbar")}
               className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-brand-primary hover:bg-brand-primary/90 hover:scale-[1.02] active:scale-[0.98] transition duration-300 shadow-lg shadow-brand-primary/10"
             >
               Hire Me
@@ -146,6 +148,7 @@ export default function Navbar() {
           })}
           <Link
             href="/contact"
+            onClick={() => trackHireMeClick("mobile_navbar")}
             className="flex items-center justify-center w-full px-5 py-3.5 mt-4 rounded-xl text-sm font-bold text-white bg-brand-primary hover:bg-brand-primary/95 transition"
           >
             Get in Touch

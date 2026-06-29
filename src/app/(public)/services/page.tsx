@@ -5,6 +5,7 @@ import * as FaIcons from "react-icons/fa";
 import connectToDatabase from "@/lib/db";
 import Service from "@/models/Service";
 import FadeIn from "@/components/FadeIn";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 export const revalidate = 3600;
 
@@ -60,6 +61,7 @@ export default async function Services() {
 
   return (
     <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-16 space-y-32 bg-bg-main text-text-main">
+      <AnalyticsTracker type="service" params={{ slug: "all", name: "All Services" }} />
       {/* Page Header */}
       <section className="text-center space-y-4 max-w-3xl mx-auto">
         <FadeIn direction="up">

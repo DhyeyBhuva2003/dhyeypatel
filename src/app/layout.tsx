@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import CustomCursor from "@/components/CustomCursor";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import CookieConsent from "@/components/CookieConsent";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -63,7 +65,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-bg-main text-text-main antialiased" suppressHydrationWarning>
         <ThemeProvider>
           <CustomCursor />
+          <GoogleAnalytics />
           {children}
+          <CookieConsent />
         </ThemeProvider>
       </body>
     </html>
