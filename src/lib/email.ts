@@ -20,6 +20,19 @@ interface EmailInquiryData {
   attachmentName?: string;
 }
 
+function escapeHtml(str: string): string {
+  return str.replace(/[&<>"']/g, (m) => {
+    const map: Record<string, string> = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#x27;"
+    };
+    return map[m];
+  });
+}
+
 /**
  * Sends a notification email to the website owner about a new contact inquiry.
  */
@@ -33,12 +46,17 @@ export async function sendOwnerInquiryEmail(data: EmailInquiryData) {
 
   const subjectText = data.subject?.trim() || "General Inquiry";
 
+  const escapedName = escapeHtml(data.name);
+  const escapedEmail = escapeHtml(data.email);
+  const escapedSubject = escapeHtml(subjectText);
+  const escapedMessage = escapeHtml(data.message);
+
   const attachmentHtml = data.attachmentUrl
     ? `<tr style="border-bottom: 1px solid #e5e7eb;">
          <td style="padding: 12px; font-weight: 600; color: #4b5563; width: 140px; vertical-align: top;">Attachment</td>
          <td style="padding: 12px; color: #1f2937; vertical-align: top;">
-           <a href="${data.attachmentUrl}" target="_blank" style="color: #6366f1; text-decoration: underline; font-weight: 500;">
-             ${data.attachmentName || "View Attachment"}
+           <a href="${escapeHtml(data.attachmentUrl)}" target="_blank" style="color: #6366f1; text-decoration: underline; font-weight: 500;">
+             ${escapeHtml(data.attachmentName || "View Attachment")}
            </a>
          </td>
        </tr>`
@@ -71,17 +89,17 @@ export async function sendOwnerInquiryEmail(data: EmailInquiryData) {
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 14px; border-collapse: collapse; margin-bottom: 24px;">
                       <tr style="border-bottom: 1px solid #e5e7eb;">
                         <td style="padding: 12px; font-weight: 600; color: #4b5563; width: 140px; vertical-align: top;">Name</td>
-                        <td style="padding: 12px; color: #1f2937; vertical-align: top;">${data.name}</td>
+                        <td style="padding: 12px; color: #1f2937; vertical-align: top;">${escapedName}</td>
                       </tr>
                       <tr style="border-bottom: 1px solid #e5e7eb;">
                         <td style="padding: 12px; font-weight: 600; color: #4b5563; width: 140px; vertical-align: top;">Email</td>
                         <td style="padding: 12px; color: #1f2937; vertical-align: top;">
-                          <a href="mailto:${data.email}" style="color: #4f46e5; text-decoration: none;">${data.email}</a>
+                          <a href="mailto:${escapedEmail}" style="color: #4f46e5; text-decoration: none;">${escapedEmail}</a>
                         </td>
                       </tr>
                       <tr style="border-bottom: 1px solid #e5e7eb;">
                         <td style="padding: 12px; font-weight: 600; color: #4b5563; width: 140px; vertical-align: top;">Subject</td>
-                        <td style="padding: 12px; color: #1f2937; vertical-align: top;">${subjectText}</td>
+                        <td style="padding: 12px; color: #1f2937; vertical-align: top;">${escapedSubject}</td>
                       </tr>
                       ${attachmentHtml}
                       <tr style="border-bottom: 1px solid #e5e7eb;">
@@ -92,7 +110,7 @@ export async function sendOwnerInquiryEmail(data: EmailInquiryData) {
 
                     <h2 style="margin: 24px 0 12px 0; color: #111827; font-size: 16px; font-weight: 700;">Message Body</h2>
                     <div style="background-color: #f9fafb; border: 1px solid #f3f4f6; padding: 16px; border-radius: 8px; font-size: 14px; color: #374151; line-height: 1.6; white-space: pre-line; margin-bottom: 28px;">
-${data.message}
+${escapedMessage}
                     </div>
 
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">

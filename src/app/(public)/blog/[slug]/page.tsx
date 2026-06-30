@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Metadata } from "next";
 import { FaArrowLeft, FaCalendarAlt, FaClock, FaTag, FaBookOpen } from "react-icons/fa";
 import { getBlogBySlug, getRelatedBlogs } from "@/lib/blogs";
 import { formatDate } from "@/lib/utils";
@@ -41,25 +40,6 @@ export async function generateMetadata({ params }: BlogDetailsProps) {
   };
 }
 
-function extractHeadings(content: string) {
-  const headingRegex = /^(#{2,3})\s+(.*)$/gm;
-  const headings = [];
-  let match;
-
-  while ((match = headingRegex.exec(content)) !== null) {
-    const level = match[1].length; // 2 for ##, 3 for ###
-    const text = match[2].trim();
-    const id = text
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/[^\w\-]+/g, "");
-    headings.push({ level, text, id });
-  }
-
-  return headings;
-}
-
 export default async function BlogDetails({ params }: BlogDetailsProps) {
   const { slug } = await params;
   const blog = await getBlogBySlug(slug);
@@ -68,7 +48,6 @@ export default async function BlogDetails({ params }: BlogDetailsProps) {
     notFound();
   }
 
-  const headings = extractHeadings(blog.content);
   const relatedBlogs = await getRelatedBlogs(blog.slug, blog.tags);
   const blogSchema = getBlogPostingSchema({
     title: blog.title,
@@ -92,7 +71,7 @@ export default async function BlogDetails({ params }: BlogDetailsProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
       />
 
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 py-12 space-y-12">
+      <div className="max-w-4xl mx-auto px-6 md:px-12 py-12 space-y-12">
         {/* Back to Blog */}
         <FadeIn direction="up">
           <Link
@@ -105,7 +84,7 @@ export default async function BlogDetails({ params }: BlogDetailsProps) {
         </FadeIn>
 
         {/* Article Header */}
-        <header className="space-y-6 max-w-4xl">
+        <header className="space-y-6">
           <FadeIn direction="up" delay={0.05}>
             <div className="flex flex-wrap gap-2">
               <span className="px-3 py-1 rounded-xl text-xs font-bold bg-brand-primary/5 text-brand-primary border border-brand-primary/10">
@@ -146,84 +125,45 @@ export default async function BlogDetails({ params }: BlogDetailsProps) {
           </FadeIn>
         </header>
 
-        {/* Main Layout Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Markdown Content (left/main column) */}
-          <div className="lg:col-span-8">
-            <FadeIn direction="up" delay={0.25}>
-              <article className="prose prose-zinc dark:prose-invert max-w-none bg-card-main border border-border-main p-6 md:p-10 rounded-3xl shadow-sm leading-relaxed text-text-main">
-                <MarkdownRenderer content={blog.content} />
-              </article>
-            </FadeIn>
+        {/* Markdown Content (Centered Single Column) */}
+        <FadeIn direction="up" delay={0.25}>
+          <article className="prose prose-zinc dark:prose-invert max-w-none bg-card-main border border-border-main p-6 sm:p-8 md:p-12 rounded-3xl shadow-sm leading-relaxed text-text-main">
+            <MarkdownRenderer content={blog.content} />
 
-            {/* Tags */}
-            <FadeIn direction="up">
-              <div className="flex flex-wrap gap-2 pt-8 mt-12 border-t border-border-main">
-                {blog.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold bg-bg-sub border border-border-main text-text-sub hover:scale-105 transition-transform"
-                  >
-                    <FaTag className="w-2.5 h-2.5 text-brand-primary dark:text-brand-accent" />
-                    <span>{tag}</span>
-                  </span>
-                ))}
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Sidebar (right column) */}
-          <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-8">
-            {/* Table of Contents */}
-            {headings.length > 0 && (
-              <FadeIn direction="up" delay={0.3}>
-                <div className="p-6 rounded-2xl bg-card-main border border-border-main space-y-4 shadow-sm">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-text-sub border-b border-border-main pb-2">
-                    Table of Contents
-                  </h3>
-                  <nav className="space-y-2.5">
-                    {headings.map((heading, idx) => (
-                      <a
-                        key={idx}
-                        href={`#${heading.id}`}
-                        className={`block text-xs font-semibold text-text-sub hover:text-brand-primary transition duration-200 ${heading.level === 3 ? "pl-3.5 border-l border-border-main" : ""
-                          }`}
-                      >
-                        {heading.text}
-                      </a>
-                    ))}
-                  </nav>
+            {/* Footer Section: Author Info & Tags */}
+            <div className="pt-8 mt-12 border-t border-border-main space-y-6 not-prose">
+              {/* Author Info */}
+              <div className="flex items-center gap-3.5">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-border-main bg-bg-sub">
+                  <img
+                    src="/dhyey.png"
+                    alt="Dhyey Bhuva"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              </FadeIn>
-            )}
-
-            {/* Author Profile */}
-            <FadeIn direction="up" delay={0.35}>
-              <div className="p-6 rounded-2xl bg-card-main border border-border-main space-y-4 shadow-sm">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-text-sub border-b border-border-main pb-2">
-                  Author
-                </h3>
-                <div className="flex items-center gap-4">
-                  <div className="relative w-12 h-12 rounded-full overflow-hidden border border-border-main bg-bg-sub">
-                    <img
-                      src="/dhyey.png"
-                      alt="Dhyey Bhuva"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="space-y-0.5">
-                    <h4 className="font-bold text-text-main text-sm">
-                      Dhyey Bhuva
-                    </h4>
-                    <p className="text-[10px] text-text-sub uppercase tracking-wider font-bold">
-                      Staff Engineer & Writer
-                    </p>
-                  </div>
+                <div>
+                  <h4 className="text-sm font-bold text-text-main">Dhyey Bhuva</h4>
+                  <p className="text-[10px] text-text-sub font-semibold">Full Stack Developer</p>
                 </div>
               </div>
-            </FadeIn>
-          </div>
-        </div>
+
+              {/* Tags */}
+              {blog.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {blog.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold bg-bg-sub border border-border-main text-text-sub hover:scale-105 transition-transform"
+                    >
+                      <FaTag className="w-2.5 h-2.5 text-brand-primary dark:text-brand-accent" />
+                      <span>{tag}</span>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </article>
+        </FadeIn>
 
         {/* Related Articles */}
         {relatedBlogs.length > 0 && (

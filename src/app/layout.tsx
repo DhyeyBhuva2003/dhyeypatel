@@ -13,14 +13,14 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Dhyey Bhuva | Staff Software Engineer & Solutions Architect",
+    default: "Dhyey Bhuva | Full Stack Developer",
     template: "%s | Dhyey Bhuva",
   },
   description:
     "Personal Brand, Portfolio, and Freelance Services platform for Dhyey Bhuva. Custom SaaS MVP builds, backend optimizations, and AI agent automation.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dhyeybhuva.tech" || "https://dhyeybhuva.netlify.app"),
   openGraph: {
-    title: "Dhyey Bhuva | Staff Software Engineer & Solutions Architect",
+    title: "Dhyey Bhuva | Full Stack Developer",
     url: "https://dhyeybhuva.tech",
     siteName: "Dhyey Bhuva Portfolio",
     locale: "en_US",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Dhyey Bhuva | Staff Software Engineer",
+    title: "Dhyey Bhuva | Full Stack Developer",
     description: "Personal Brand, Portfolio, and Freelance Services platform for Dhyey Bhuva.",
   },
   robots: {

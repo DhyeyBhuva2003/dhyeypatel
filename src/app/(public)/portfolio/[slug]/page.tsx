@@ -63,7 +63,7 @@ async function getRelatedProjects(category: string, currentSlug: string) {
         .lean();
       related = [...related, ...additional];
     }
-    
+
     return JSON.parse(JSON.stringify(related));
   } catch (err) {
     console.error("Failed to fetch related projects:", err);
@@ -184,11 +184,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   </span>
                 )}
                 <span
-                  className={`px-3 py-1 rounded-xl text-xs font-bold border ${
-                    project.status === "Completed"
-                      ? "bg-brand-success/5 text-brand-success border-brand-success/20"
-                      : "bg-brand-warning/5 text-brand-warning border-brand-warning/20"
-                  }`}
+                  className={`px-3 py-1 rounded-xl text-xs font-bold border ${project.status === "Completed"
+                    ? "bg-brand-success/5 text-brand-success border-brand-success/20"
+                    : "bg-brand-warning/5 text-brand-warning border-brand-warning/20"
+                    }`}
                 >
                   {project.status || "Completed"}
                 </span>
@@ -259,7 +258,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   {project.fullDescription}
                 </p>
               ) : null}
-              
+
               {project.content && (
                 <div className="mt-4">
                   <MarkdownRenderer content={project.content} />
@@ -293,14 +292,16 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           )}
 
           {/* Screenshots Gallery */}
-          <FadeIn direction="up">
-            <div className="bg-card-main border border-border-main p-6 md:p-8 rounded-2xl shadow-sm space-y-6">
-              <h2 className="text-2xl font-bold text-text-main border-b border-border-main pb-3">
-                Interface & Experience Gallery
-              </h2>
-              <ProjectGallery images={galleryImages} />
-            </div>
-          </FadeIn>
+          {galleryImages.length > 1 && (
+            <FadeIn direction="up">
+              <div className="bg-card-main border border-border-main p-6 md:p-8 rounded-2xl shadow-sm space-y-6">
+                <h2 className="text-2xl font-bold text-text-main border-b border-border-main pb-3">
+                  Interface & Experience Gallery
+                </h2>
+                <ProjectGallery images={galleryImages} />
+              </div>
+            </FadeIn>
+          )}
 
           {/* Challenges & Solutions */}
           {maxPairs > 0 && (
@@ -446,7 +447,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
       {/* Related Projects */}
       {relatedProjects.length > 0 && (
-        <section className="max-w-[1400px] mx-auto px-6 md:px-12 mt-20 pt-12 border-t border-border-main">
+        <section className="max-w-[1400px] mx-auto px-6 md:px-12 mt-20 pt-12  border-border-main">
           <FadeIn direction="up">
             <h2 className="text-2xl md:text-3xl font-extrabold text-text-main mb-8">
               Explore Other Case Studies
@@ -455,19 +456,19 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {relatedProjects.map((relProject: any, idx: number) => (
               <FadeIn key={relProject._id} direction="up" delay={idx * 0.1}>
-                <div className="group flex flex-col justify-between overflow-hidden rounded-2xl bg-card-main border border-border-main hover:border-brand-primary/30 hover:scale-[1.01] hover:shadow-xl transition-all duration-300 min-h-[380px] shadow-sm">
-                  <div>
-                    <div className="relative aspect-video w-full overflow-hidden bg-bg-sub border-b border-border-main">
-                      <Image
-                        src={relProject.imageUrl || "/images/placeholder.jpg"}
-                        alt={relProject.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition duration-500"
-                        sizes="(max-width: 768px) 100vw, 350px"
-                      />
-                    </div>
-                    <div className="p-6 space-y-3">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-primary/5 text-brand-primary border border-brand-primary/10">
+                <div className="group overflow-hidden rounded-2xl bg-card-main border border-border-main hover:border-brand-primary/30 hover:scale-[1.01] hover:shadow-xl transition-all duration-300 flex flex-col min-h-[400px] shadow-sm">
+                  <div className="relative aspect-video w-full overflow-hidden bg-bg-sub border-b border-border-main">
+                    <Image
+                      src={relProject.imageUrl || "/images/placeholder.jpg"}
+                      alt={relProject.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition duration-500"
+                      sizes="(max-width: 768px) 100vw, 350px"
+                    />
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <div className="space-y-3">
+                      <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-brand-primary/5 text-brand-primary border border-brand-primary/10">
                         {relProject.category || "Case Study"}
                       </span>
                       <h3 className="text-lg font-bold text-text-main leading-snug line-clamp-1 group-hover:text-brand-primary transition">
@@ -477,38 +478,38 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                         {relProject.shortDescription || relProject.description}
                       </p>
                     </div>
-                  </div>
 
-                  <div className="p-6 pt-0 mt-2 border-t border-border-main flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      {relProject.githubUrl && (
-                        <a
-                          href={relProject.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-text-sub hover:text-brand-primary transition"
-                        >
-                          <FaGithub size={16} />
-                        </a>
-                      )}
-                      {relProject.demoUrl && (
-                        <a
-                          href={relProject.demoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-text-sub hover:text-brand-primary transition"
-                        >
-                          <FaExternalLinkAlt size={13} />
-                        </a>
-                      )}
+                    <div className="pt-4 border-t border-border-main flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {relProject.githubUrl && (
+                          <a
+                            href={relProject.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-text-sub hover:text-brand-primary transition"
+                          >
+                            <FaGithub size={16} />
+                          </a>
+                        )}
+                        {relProject.demoUrl && (
+                          <a
+                            href={relProject.demoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-text-sub hover:text-brand-primary transition"
+                          >
+                            <FaExternalLinkAlt size={13} />
+                          </a>
+                        )}
+                      </div>
+                      <Link
+                        href={`/portfolio/${relProject.slug}`}
+                        className="text-xs font-bold text-brand-primary dark:text-brand-accent hover:underline inline-flex items-center gap-1 group/link"
+                      >
+                        View Details
+                        <FaChevronRight size={7} className="group-hover/link:translate-x-0.5 transition-transform" />
+                      </Link>
                     </div>
-                    <Link
-                      href={`/portfolio/${relProject.slug}`}
-                      className="text-xs font-bold text-brand-primary dark:text-brand-accent hover:underline inline-flex items-center gap-1 group/link"
-                    >
-                      View Details
-                      <FaChevronRight size={7} className="group-hover/link:translate-x-0.5 transition-transform" />
-                    </Link>
                   </div>
                 </div>
               </FadeIn>

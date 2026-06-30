@@ -46,7 +46,7 @@ function CodePreview() {
           <br />
           <span className="text-purple-400">const</span> <span className="text-white">solution</span> = <span className="text-purple-400">new</span> <span className="text-yellow-300">Architect</span>(<span className="text-zinc-400">{"{"}</span><br />
           &nbsp;&nbsp;<span className="text-blue-300">name</span>: <span className="text-emerald-400">&quot;Dhyey Bhuva&quot;</span>,<br />
-          &nbsp;&nbsp;<span className="text-blue-300">role</span>: <span className="text-emerald-400">&quot;Solutions Architect &amp; Developer&quot;</span>,<br />
+          &nbsp;&nbsp;<span className="text-blue-300">role</span>: <span className="text-emerald-400">&quot;Full Stack Developer&quot;</span>,<br />
           &nbsp;&nbsp;<span className="text-blue-300">focus</span>: [<span className="text-emerald-400">&quot;SaaS&quot;</span>, <span className="text-emerald-400">&quot;AI&quot;</span>, <span className="text-emerald-400">&quot;Cloud&quot;</span>, <span className="text-emerald-400">&quot;Web&quot;</span>],<br />
           <span className="text-zinc-400">{"}"}</span>);<br />
           <br />
