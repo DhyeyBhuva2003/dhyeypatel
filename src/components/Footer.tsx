@@ -218,7 +218,7 @@ export default function Footer() {
                 <span className="text-brand-primary">Bhuva</span>
               </Link>
               <p className="text-xs font-semibold text-brand-primary/80 dark:text-brand-accent/80 uppercase tracking-widest mt-1">
-                Solutions Architect &amp; Dev
+                Full Stack Developer
               </p>
             </div>
 

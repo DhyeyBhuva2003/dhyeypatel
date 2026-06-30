@@ -15,7 +15,7 @@ export function getPersonSchema() {
       "https://www.linkedin.com/in/dhyeybhuva/",
       "https://www.upwork.com/freelancers/~01d4c44951f41c2c1d",
     ],
-    "jobTitle": "Staff Software Engineer & Solutions Architect",
+    "jobTitle": "Full Stack Developer",
     "knowsAbout": [
       "Software Architecture",
       "Next.js",
