@@ -37,12 +37,21 @@ export async function POST(request: Request) {
 
     // 2. Fetch User and update password
     await connectToDatabase();
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
       return NextResponse.json(
         { success: false, message: "User account not found." },
         { status: 404 }
+      );
+    }
+
+    // 3. Verify single-use validation (hash slice check)
+    const currentHashSlice = user.password ? user.password.substring(user.password.length - 10) : "";
+    if (decoded.pwdHash !== currentHashSlice) {
+      return NextResponse.json(
+        { success: false, message: "This recovery link has already been used or is invalid." },
+        { status: 400 }
       );
     }
 

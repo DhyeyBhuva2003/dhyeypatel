@@ -33,11 +33,15 @@ export async function POST(request: Request) {
       });
     }
 
+    // Slice of current password hash to invalidate token on change
+    const pwdHashSlice = user.password ? user.password.substring(user.password.length - 10) : "";
+
     // Generate secure recovery token (JWT expiring in 1 hour)
     const token = await signToken(
       {
         email: user.email,
         purpose: "password-reset",
+        pwdHash: pwdHashSlice,
       },
       60 * 60 // 1 hour in seconds
     );
@@ -54,8 +58,6 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       message: "Password reset link generated and logged. In production, an email is dispatched.",
-      // For developer testing efficiency in sandbox:
-      developmentLink: resetUrl,
     });
   } catch (err: any) {
     console.error("Forgot password API error:", err);

@@ -57,6 +57,22 @@ export function resolvePath(obj: any, path: string, fallback: any = ""): any {
 }
 
 /**
+ * Escape HTML special character tags to preventStored XSS / HTML Injection.
+ */
+export function escapeHtml(str: string): string {
+  return str.replace(/[&<>"']/g, (m) => {
+    const map: Record<string, string> = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#x27;"
+    };
+    return map[m];
+  });
+}
+
+/**
  * Compiles and interpolates variables, conditionals, and loops in a string
  */
 export function interpolateVariables(template: string, context: any): string {
@@ -109,7 +125,7 @@ export function interpolateVariables(template: string, context: any): string {
     const fullMatch = placeholderMatch[0];
     const path = placeholderMatch[1].trim();
     const value = resolvePath(context, path, "");
-    result = result.replace(fullMatch, String(value));
+    result = result.replace(fullMatch, escapeHtml(String(value)));
     placeholderRegex.lastIndex = 0;
   }
 

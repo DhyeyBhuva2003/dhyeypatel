@@ -71,8 +71,19 @@ export async function PUT(request: Request) {
     }
 
     // 4. Update Profile Details
+    const normalizedEmail = email.toLowerCase().trim();
+    if (dbUser.email !== normalizedEmail) {
+      const emailExists = await User.findOne({ email: normalizedEmail });
+      if (emailExists) {
+        return NextResponse.json(
+          { success: false, message: "Email is already registered by another user" },
+          { status: 400 }
+        );
+      }
+    }
+
     dbUser.name = name;
-    dbUser.email = email.toLowerCase().trim();
+    dbUser.email = normalizedEmail;
     if (profileImage !== undefined) {
       dbUser.profileImage = profileImage;
     }
