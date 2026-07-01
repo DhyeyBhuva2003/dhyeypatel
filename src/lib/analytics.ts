@@ -115,3 +115,7 @@ export const trackGitHubClick = () => {
 export const trackYouTubeClick = () => {
   trackEvent("youtube_click");
 };
+
+export const trackBookConsultationClick = (url: string) => {
+  trackEvent("book_consultation_click", { booking_url: url });
+};
