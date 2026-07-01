@@ -24,7 +24,8 @@ import {
   trackLinkedInClick,
   trackGitHubClick,
   trackYouTubeClick,
-  trackEvent
+  trackEvent,
+  trackBookConsultationClick
 } from "@/lib/analytics";
 
 // Register ScrollTrigger plugin on client side
@@ -49,6 +50,8 @@ export default function Footer() {
   const footerRef = useRef<HTMLDivElement>(null);
   const columnsRef = useRef<HTMLDivElement>(null);
   const socialRef = useRef<HTMLDivElement>(null);
+
+  const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL || "https://calendly.com/dhyeybhuva2003/30min";
 
   const [localTime, setLocalTime] = useState<string>("");
   const [dynamicServices, setDynamicServices] = useState<any[]>([]);
@@ -328,15 +331,18 @@ export default function Footer() {
             </ul>
 
             <div className="pt-2">
-              <Link
-                href="/contact"
+              <a
+                href={bookingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackBookConsultationClick(bookingUrl)}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs font-bold text-white bg-brand-primary hover:bg-brand-primary/90 transition-all duration-300 hover:scale-[1.03] shadow-lg shadow-brand-primary/20 hover:shadow-brand-primary/30 relative overflow-hidden group/btn"
               >
                 {/* Glow Pulse Animation Layer */}
                 <span className="absolute inset-0 bg-white/10 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
                 <FaCalendarAlt size={12} />
                 <span>Schedule a Call</span>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
