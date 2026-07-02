@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { PenSquare, Plus, X, Eye, EyeOff, BookOpen, Clock, FileText } from "lucide-react";
 import { Toaster } from "sonner";
-
 import { useBlogs, useCreateBlog, useUpdateBlog, useDeleteBlog } from "@/hooks/useBlogs";
 import { DataGrid, DataGridColumn } from "@/components/datagrid/DataGrid";
 import { Blog } from "@/types";
@@ -187,11 +186,10 @@ export default function AdminBlogs() {
         label: "Status",
         render: (row) => (
           <span
-            className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-              row.published
+            className={`px-2 py-0.5 rounded text-[10px] font-bold ${row.published
                 ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-450"
                 : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
-            }`}
+              }`}
           >
             {row.published ? "Published" : "Draft"}
           </span>
@@ -270,111 +268,111 @@ export default function AdminBlogs() {
       {isFormOpen && (
         <Portal>
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          {/* Overlay Click Target to Close */}
-          <div className="absolute inset-0" onClick={() => setIsFormOpen(false)} />
-          
-          <div className="relative w-full max-w-5xl h-[90vh] bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800 rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden animate-scaleUp z-10">
-            {/* Sticky Header */}
-            <div className="sticky top-0 bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 px-6 py-4 flex justify-between items-center z-25 select-none">
-              <div>
-                <h2 className="text-base font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-                  <BookOpen className="w-4.5 h-4.5 text-brand-primary" />
-                  <span>{editingId ? "Modify Blog Article" : "Compose Blog Article"}</span>
-                </h2>
-                <p className="text-[10px] font-bold text-zinc-450 dark:text-zinc-500 mt-0.5 leading-none">
-                  Write Guides, define category keywords, and edit metadata.
-                </p>
+            {/* Overlay Click Target to Close */}
+            <div className="absolute inset-0" onClick={() => setIsFormOpen(false)} />
+
+            <div className="relative w-full max-w-5xl h-[90vh] bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800 rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden animate-scaleUp z-10">
+              {/* Sticky Header */}
+              <div className="sticky top-0 bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 px-6 py-4 flex justify-between items-center z-25 select-none">
+                <div>
+                  <h2 className="text-base font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                    <BookOpen className="w-4.5 h-4.5 text-brand-primary" />
+                    <span>{editingId ? "Modify Blog Article" : "Compose Blog Article"}</span>
+                  </h2>
+                  <p className="text-[10px] font-bold text-zinc-450 dark:text-zinc-500 mt-0.5 leading-none">
+                    Write Guides, define category keywords, and edit metadata.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsFormOpen(false)}
+                  className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850 cursor-pointer"
+                >
+                  <X className="w-4.5 h-4.5" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsFormOpen(false)}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-850 cursor-pointer"
-              >
-                <X className="w-4.5 h-4.5" />
-              </button>
+
+              {/* Scrollable Content */}
+              <FormProvider {...formMethods}>
+                <form onSubmit={formMethods.handleSubmit(handleFormSubmit)} className="flex-1 flex flex-col justify-between overflow-hidden">
+                  <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin">
+
+                    {/* Card Section: Article Specs */}
+                    <div className="p-6 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                      <h3 className="text-xs font-black uppercase text-zinc-450 dark:text-zinc-455 tracking-wider">1. Article Specification</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="md:col-span-2">
+                          <FormInput name="title" label="Article Title" placeholder="Mastering State Mutations" required />
+                        </div>
+                        <FormInput name="category" label="Category" placeholder="Engineering / Web" required />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="md:col-span-2">
+                          <FormMultiSelect name="tags" label="Tags (Type & press Enter)" />
+                        </div>
+                        <FormInput name="readTime" label="Estimated Read Time" placeholder="6 min read" required />
+                      </div>
+                      <FormImageUpload name="imageUrl" label="Cover Banner Image" folder="blogs" />
+                    </div>
+
+                    {/* Card Section: Pitch Description Summary */}
+                    <div className="p-6 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                      <h3 className="text-xs font-black uppercase text-zinc-455 dark:text-zinc-455 tracking-wider">2. Elevator Pitch Summary</h3>
+                      <FormTextarea
+                        name="description"
+                        label="Short summary pitch"
+                        placeholder="Enter a brief description summarizing this article for main previews..."
+                        required
+                        showCounter={true}
+                        maxCharacters={200}
+                        autoResize={true}
+                      />
+                    </div>
+
+                    {/* Card Section: Rich Content Editor */}
+                    <div className="p-6 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                      <h3 className="text-xs font-black uppercase text-zinc-455 dark:text-zinc-455 tracking-wider">3. Article Rich Content</h3>
+                      <FormMarkdownEditor
+                        name="content"
+                        label="Article Body Content"
+                        placeholder="# Article Title\nWrite content details here..."
+                        rows={14}
+                      />
+                    </div>
+
+                    {/* Card Section: Lifecycle */}
+                    <div className="p-6 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
+                      <h3 className="text-xs font-black uppercase text-zinc-455 dark:text-zinc-455 tracking-wider">4. Publishing Options</h3>
+                      <FormCheckbox name="published" label="Publish immediately" description="Makes the article active and public on save" />
+                    </div>
+
+                  </div>
+
+                  {/* Sticky Footer */}
+                  <div className="sticky bottom-0 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-150 dark:border-zinc-800 px-6 py-4 flex gap-3 justify-end z-25">
+                    <button
+                      type="button"
+                      onClick={() => setIsFormOpen(false)}
+                      className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold hover:bg-zinc-100 dark:hover:bg-zinc-900 transition text-zinc-700 dark:text-zinc-350 cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={createMutation.loading || updateMutation.loading}
+                      className="px-5 py-2.5 rounded-xl bg-brand-primary text-white font-bold text-xs hover:bg-primary-hover transition cursor-pointer disabled:opacity-60 flex items-center justify-center min-w-[100px]"
+                    >
+                      {createMutation.loading || updateMutation.loading ? (
+                        <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      ) : (
+                        "Save Article"
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </FormProvider>
             </div>
-
-            {/* Scrollable Content */}
-            <FormProvider {...formMethods}>
-              <form onSubmit={formMethods.handleSubmit(handleFormSubmit)} className="flex-1 flex flex-col justify-between overflow-hidden">
-                <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin">
-                  
-                  {/* Card Section: Article Specs */}
-                  <div className="p-6 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
-                    <h3 className="text-xs font-black uppercase text-zinc-450 dark:text-zinc-455 tracking-wider">1. Article Specification</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="md:col-span-2">
-                        <FormInput name="title" label="Article Title" placeholder="Mastering State Mutations" required />
-                      </div>
-                      <FormInput name="category" label="Category" placeholder="Engineering / Web" required />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="md:col-span-2">
-                        <FormMultiSelect name="tags" label="Tags (Type & press Enter)" />
-                      </div>
-                      <FormInput name="readTime" label="Estimated Read Time" placeholder="6 min read" required />
-                    </div>
-                    <FormImageUpload name="imageUrl" label="Cover Banner Image" folder="blogs" />
-                  </div>
-
-                  {/* Card Section: Pitch Description Summary */}
-                  <div className="p-6 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
-                    <h3 className="text-xs font-black uppercase text-zinc-455 dark:text-zinc-455 tracking-wider">2. Elevator Pitch Summary</h3>
-                    <FormTextarea 
-                      name="description" 
-                      label="Short summary pitch" 
-                      placeholder="Enter a brief description summarizing this article for main previews..." 
-                      required 
-                      showCounter={true}
-                      maxCharacters={200}
-                      autoResize={true}
-                    />
-                  </div>
-
-                  {/* Card Section: Rich Content Editor */}
-                  <div className="p-6 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
-                    <h3 className="text-xs font-black uppercase text-zinc-455 dark:text-zinc-455 tracking-wider">3. Article Rich Content</h3>
-                    <FormMarkdownEditor 
-                      name="content" 
-                      label="Article Body Content" 
-                      placeholder="# Article Title\nWrite content details here..." 
-                      rows={14}
-                    />
-                  </div>
-
-                  {/* Card Section: Lifecycle */}
-                  <div className="p-6 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50/20 dark:bg-zinc-950/20 space-y-4">
-                    <h3 className="text-xs font-black uppercase text-zinc-455 dark:text-zinc-455 tracking-wider">4. Publishing Options</h3>
-                    <FormCheckbox name="published" label="Publish immediately" description="Makes the article active and public on save" />
-                  </div>
-
-                </div>
-
-                {/* Sticky Footer */}
-                <div className="sticky bottom-0 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-150 dark:border-zinc-800 px-6 py-4 flex gap-3 justify-end z-25">
-                  <button
-                    type="button"
-                    onClick={() => setIsFormOpen(false)}
-                    className="px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold hover:bg-zinc-100 dark:hover:bg-zinc-900 transition text-zinc-700 dark:text-zinc-350 cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={createMutation.loading || updateMutation.loading}
-                    className="px-5 py-2.5 rounded-xl bg-brand-primary text-white font-bold text-xs hover:bg-primary-hover transition cursor-pointer disabled:opacity-60 flex items-center justify-center min-w-[100px]"
-                  >
-                    {createMutation.loading || updateMutation.loading ? (
-                      <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    ) : (
-                      "Save Article"
-                    )}
-                  </button>
-                </div>
-              </form>
-            </FormProvider>
           </div>
-        </div>
         </Portal>
       )}
     </div>
