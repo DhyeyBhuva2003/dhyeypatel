@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface AccordionItem {
   title: string;
@@ -34,19 +35,29 @@ export default function Accordion({ items }: AccordionProps) {
               className="w-full px-6 py-5 flex justify-between items-center text-left font-bold text-zinc-900 dark:text-white hover:bg-zinc-50/50 dark:hover:bg-zinc-900/80 transition-colors cursor-pointer focus:outline-none"
             >
               <span className="text-sm md:text-base tracking-tight">{item.title}</span>
-              <FaChevronDown
-                className={`w-4 h-4 text-purple-600 dark:text-purple-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""
-                  }`}
-              />
+              <motion.div
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="text-purple-600 dark:text-purple-400"
+              >
+                <FaChevronDown className="w-4 h-4" />
+              </motion.div>
             </button>
-            <div
-              className={`transition-all duration-300 ease-in-out overflow-hidden ${isOpen ? "max-h-[1000px] border-t border-zinc-100 dark:border-zinc-850" : "max-h-0"
-                }`}
-            >
-              <div className="px-6 py-5 text-sm leading-relaxed text-zinc-650 dark:text-zinc-400 space-y-4 bg-zinc-50/20 dark:bg-zinc-950/20">
-                {item.content}
-              </div>
-            </div>
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  className="overflow-hidden border-t border-zinc-100 dark:border-zinc-850"
+                >
+                  <div className="px-6 py-5 text-sm leading-relaxed text-zinc-650 dark:text-zinc-400 space-y-4 bg-zinc-50/20 dark:bg-zinc-950/20">
+                    {item.content}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         );
       })}

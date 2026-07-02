@@ -6,10 +6,29 @@ import { serviceSchema } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await connectToDatabase();
+    const { searchParams } = new URL(request.url);
+    const slug = searchParams.get("slug");
+
+    if (slug) {
+      const service = await Service.findOne({ slug });
+      if (!service) {
+        return NextResponse.json(
+          { success: false, message: "Service not found" },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json({
+        success: true,
+        message: "Service retrieved successfully",
+        data: service,
+      });
+    }
+
     const services = await Service.find({}).sort({ order: 1, createdAt: -1 });
+
     return NextResponse.json({
       success: true,
       message: "Services retrieved successfully",

@@ -6,10 +6,31 @@ import { projectSchema } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await connectToDatabase();
-    const projects = await Project.find({}).sort({ order: 1, createdAt: -1 });
+    const { searchParams } = new URL(request.url);
+    const slug = searchParams.get("slug");
+    const category = searchParams.get("category");
+
+    if (slug) {
+      const project = await Project.findOne({ slug });
+      if (!project) {
+        return NextResponse.json(
+          { success: false, message: "Project not found" },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json({
+        success: true,
+        message: "Project retrieved successfully",
+        data: project,
+      });
+    }
+
+    const query = category ? { category } : {};
+    const projects = await Project.find(query).sort({ order: 1, createdAt: -1 });
+
     return NextResponse.json({
       success: true,
       message: "Projects retrieved successfully",
