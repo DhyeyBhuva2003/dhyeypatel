@@ -39,7 +39,7 @@ const socialLinks = [
   { href: "https://linkedin.com/in/dhyeybhuva/", icon: <FaLinkedinIn size={18} />, label: "LinkedIn", color: "hover:bg-blue-600 hover:text-white hover:shadow-blue-600/25", onClick: () => trackLinkedInClick() },
   { href: "https://www.upwork.com/freelancers/~01d4c44951f41c2c1d?mp_source=share", icon: <SiUpwork size={18} />, label: "Upwork", color: "hover:bg-[#14a800] hover:text-white hover:shadow-[#14a800]/25", onClick: () => trackEvent("upwork_click") },
   { href: "https://www.youtube.com/@DhyeyBhuva1008", icon: <FaYoutube size={18} />, label: "YouTube", color: "hover:bg-red-600 hover:text-white hover:shadow-red-600/25", onClick: () => trackYouTubeClick() },
-  { href: "https://instagram.com/dhyey_bhuva_003", icon: <FaInstagram size={18} />, label: "Instagram", color: "hover:bg-pink-600 hover:text-white hover:shadow-pink-600/25", onClick: () => trackEvent("instagram_click") },
+  { href: "https://www.instagram.com/dhyey_.bhuva/", icon: <FaInstagram size={18} />, label: "Instagram", color: "hover:bg-pink-600 hover:text-white hover:shadow-pink-600/25", onClick: () => trackEvent("instagram_click") },
   { href: "https://x.com/Dhyey_bhuva", icon: <FaTwitter size={18} />, label: "Twitter", color: "hover:bg-sky-500 hover:text-white hover:shadow-sky-500/25", onClick: () => trackEvent("twitter_click") },
   { href: "mailto:dhyeybhuva2003@gmail.com", icon: <FaEnvelope size={18} />, label: "Email", color: "hover:bg-brand-primary hover:text-white hover:shadow-brand-primary/25", onClick: () => trackEmailClick("dhyeybhuva2003@gmail.com") }
 ];
