@@ -7,6 +7,7 @@ import Service from "@/models/Service";
 import { queryKeys } from "@/constants/queryKeys";
 import ServiceDetailsClient from "./ServiceDetailsClient";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { getServiceSchema, getBreadcrumbSchema } from "@/lib/seo";
 
 export const revalidate = 3600;
 
@@ -45,18 +46,41 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!service) {
     return {
-      title: "Service Not Found",
-      description: "The requested consulting service could not be found.",
+      title: "Service Not Found | Dhyey Bhuva",
+      description: "The requested engineering and consulting service could not be found.",
     };
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dhyeybhuva.tech";
+  const canonicalUrl = `${baseUrl}/services/${service.slug}`;
+  const title = service.seo?.metaTitle || `${service.title} Services | Dhyey Bhuva`;
+  const description = service.seo?.metaDescription || service.description;
+
   return {
-    title: `${service.title} | Dhyey Bhuva`,
-    description: service.description,
+    title,
+    description,
+    keywords: service.seo?.keywords || service.features || [service.title, "Freelance Engineering", "Web Development"],
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
-      title: `${service.title} | Dhyey Bhuva`,
-      description: service.description,
+      title,
+      description,
+      url: canonicalUrl,
       type: "website",
+      siteName: "Dhyey Bhuva - Freelance Development & Services",
+      images: [
+        {
+          url: `${baseUrl}/dhyey.png`,
+          alt: service.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`${baseUrl}/dhyey.png`],
     },
   };
 }
@@ -69,6 +93,16 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dhyeybhuva.tech";
+
+  // Generate Google JSON-LD schemas
+  const serviceSchema = getServiceSchema(service);
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Services", url: "/services" },
+    { name: service.title, url: `/services/${service.slug}` },
+  ]);
+
   // Prefetch details query on server for hydration
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
@@ -80,8 +114,18 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      {/* Structured Data (JSON-LD) for Service & Breadcrumbs */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <AnalyticsTracker type="service" params={{ slug: service.slug, name: service.title }} />
       <ServiceDetailsClient slug={slug} />
     </HydrationBoundary>
   );
 }
+

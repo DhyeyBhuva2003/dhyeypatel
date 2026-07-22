@@ -1,35 +1,68 @@
 import React from "react";
 import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import { Metadata } from "next";
 import connectToDatabase from "@/lib/db";
 import Service from "@/models/Service";
 import { queryKeys } from "@/constants/queryKeys";
 import ServicesClient from "./ServicesClient";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { getServicesListSchema, getBreadcrumbSchema } from "@/lib/seo";
 
 export const revalidate = 3600;
 
-export const metadata = {
-  title: "Freelance Development Services | Dhyey Bhuva",
-  description: "Freelance Services personal startup builds, custom SaaS API architectures, system migrations, database designs, and speed improvements.",
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dhyeybhuva.tech";
+
+export const metadata: Metadata = {
+  title: "Freelance Development Services & Technical Consulting | Dhyey Bhuva",
+  description: "Explore professional full-stack development services by Dhyey Bhuva: Next.js SaaS MVP development, custom REST & GraphQL APIs, database optimization, cloud architecture, and speed audits.",
+  keywords: [
+    "Freelance Full Stack Developer",
+    "Next.js Development Services",
+    "SaaS MVP Development",
+    "Backend Architecture Consulting",
+    "TypeScript & MongoDB Services",
+    "Web Development Freelancer",
+  ],
+  alternates: {
+    canonical: `${baseUrl}/services`,
+  },
   openGraph: {
-    title: "Freelance Development Services | Dhyey Bhuva",
-    description: "Startup-grade full stack Next.js and backend engineering contract structures.",
+    title: "Freelance Development Services & Technical Consulting | Dhyey Bhuva",
+    description: "Startup-grade full stack Next.js web application development and cloud backend engineering services.",
+    url: `${baseUrl}/services`,
     type: "website",
+    siteName: "Dhyey Bhuva - Freelance Development Services",
+    images: [
+      {
+        url: `${baseUrl}/dhyey.png`,
+        alt: "Dhyey Bhuva Freelance Services",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Freelance Development Services & Consulting | Dhyey Bhuva",
+    description: "Full-stack web application development, custom API architectures, and performance engineering.",
+    images: [`${baseUrl}/dhyey.png`],
   },
 };
 
 export default async function Services() {
-  const queryClient = new QueryClient();
+  await connectToDatabase();
+  const services = await Service.find({}).sort({ order: 1 }).lean();
+  const serializedServices = JSON.parse(JSON.stringify(services));
 
-  // Prefetch services list query on the server side
+  const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: queryKeys.services.all(),
-    queryFn: async () => {
-      await connectToDatabase();
-      const services = await Service.find({}).sort({ order: 1 }).lean();
-      return JSON.parse(JSON.stringify(services));
-    },
+    queryFn: async () => serializedServices,
   });
+
+  const servicesListSchema = getServicesListSchema(serializedServices);
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Services", url: "/services" },
+  ]);
 
   const processSteps = [
     {
@@ -61,8 +94,17 @@ export default async function Services() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesListSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <AnalyticsTracker type="service" params={{ slug: "all", name: "All Services" }} />
       <ServicesClient processSteps={processSteps} />
     </HydrationBoundary>
   );
 }
+
