@@ -7,6 +7,7 @@ import Project from "@/models/Project";
 import { queryKeys } from "@/constants/queryKeys";
 import PortfolioDetailsClient from "./PortfolioDetailsClient";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { getProjectSchema, getBreadcrumbSchema } from "@/lib/seo";
 
 export const revalidate = 3600;
 
@@ -74,26 +75,42 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!project) {
     return {
-      title: "Project Not Found",
+      title: "Project Not Found | Dhyey Bhuva",
       description: "The requested project case study could not be found.",
     };
   }
 
-  const metaTitle = project.seo?.metaTitle || `${project.title} - Case Study`;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dhyeybhuva.tech";
+  const canonicalUrl = `${baseUrl}/portfolio/${project.slug}`;
+  const metaTitle = project.seo?.metaTitle || `${project.title} - Case Study | Dhyey Bhuva`;
   const metaDesc = project.seo?.metaDescription || project.shortDescription || project.description;
+  const imageUrl = project.imageUrl || `${baseUrl}/dhyey.png`;
 
   return {
     title: metaTitle,
     description: metaDesc,
+    keywords: project.technologies || project.tags || [project.title, "Case Study", "Web Development"],
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: metaTitle,
       description: metaDesc,
+      url: canonicalUrl,
+      type: "article",
+      siteName: "Dhyey Bhuva - Portfolio & Case Studies",
       images: [
         {
-          url: project.imageUrl || "/images/placeholder.jpg",
+          url: imageUrl,
           alt: project.title,
         },
       ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metaTitle,
+      description: metaDesc,
+      images: [imageUrl],
     },
   };
 }
@@ -108,6 +125,14 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   const relatedProjects = await getRelatedProjects(project.category || "", project.slug);
 
+  // Generate Google JSON-LD schemas
+  const projectSchema = getProjectSchema(project);
+  const breadcrumbSchema = getBreadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "Portfolio", url: "/portfolio" },
+    { name: project.title, url: `/portfolio/${project.slug}` },
+  ]);
+
   // Prefetch details query on server for instant render & hydration
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
@@ -119,6 +144,15 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      {/* Structured Data (JSON-LD) for Project & Breadcrumbs */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <AnalyticsTracker type="project" params={{ slug: project.slug, name: project.title }} />
       <PortfolioDetailsClient
         slug={slug}
@@ -127,3 +161,4 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     </HydrationBoundary>
   );
 }
+

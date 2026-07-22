@@ -8,6 +8,11 @@ export interface IService extends Document {
   price: string; // Pricing text (e.g. "$499" or "Custom")
   slug: string;
   order: number;
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: string[];
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,9 +26,15 @@ const ServiceSchema = new Schema<IService>(
     price: { type: String, required: true, trim: true },
     slug: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
     order: { type: Number, default: 0 },
+    seo: {
+      metaTitle: { type: String, trim: true },
+      metaDescription: { type: String, trim: true },
+      keywords: { type: [String], default: [] },
+    },
   },
   { timestamps: true }
 );
 
 export const Service = mongoose.models.Service || mongoose.model<IService>("Service", ServiceSchema);
 export default Service;
+
