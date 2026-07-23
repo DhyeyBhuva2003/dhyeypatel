@@ -33,7 +33,7 @@ export default function NotFound() {
           Lost in Space?
         </h1>
         <p className="text-xs font-semibold text-text-sub leading-relaxed max-w-sm mx-auto">
-          The page you are looking for doesn't exist, has been moved, or resides in a sandbox region.
+          The page you are looking for doesn&apos;t exist, has been moved, or resides in a sandbox region.
         </p>
       </div>
 

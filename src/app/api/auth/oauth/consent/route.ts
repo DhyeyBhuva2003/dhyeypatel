@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     await preferences.save();
 
     // 2. Update Subscriber marketing status & assign tags
-    let subscriber = await Subscriber.findOne({ email: user.email.toLowerCase() });
+    const subscriber = await Subscriber.findOne({ email: user.email.toLowerCase() });
     if (subscriber) {
       subscriber.status = consent ? "SUBSCRIBED" : "UNSUBSCRIBED";
 

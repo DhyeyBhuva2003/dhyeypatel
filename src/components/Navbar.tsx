@@ -116,7 +116,9 @@ export default function Navbar() {
             type="button"
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2.5 rounded-xl border border-border-main hover:bg-bg-sub text-text-sub hover:text-text-main focus:outline-none transition cursor-pointer"
-            aria-label="Toggle menu"
+            aria-label="Toggle navigation menu"
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation-menu"
           >
             {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
           </button>
@@ -125,6 +127,8 @@ export default function Navbar() {
 
       {/* Mobile Navigation Drawer */}
       <div
+        id="mobile-navigation-menu"
+        aria-hidden={!isOpen}
         className={`md:hidden fixed inset-0 top-[70px] bg-bg-main z-40 transition-transform duration-300 ease-in-out border-t border-border-main ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}

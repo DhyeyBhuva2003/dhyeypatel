@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { FaCheckCircle } from "react-icons/fa";
-import * as FaIcons from "react-icons/fa";
+import IconResolver from "@/components/IconResolver";
 import { useServices } from "@/hooks/useServices";
 import FadeIn from "@/components/FadeIn";
 import { ServiceListSkeleton } from "@/components/ui/Skeletons";
@@ -18,15 +18,7 @@ interface ServicesClientProps {
 
 // Helper to map icon string to React Icon component dynamically
 function getIconComponent(iconName: string) {
-  let formattedName = iconName;
-  if (iconName && !iconName.startsWith("Fa")) {
-    formattedName = "Fa" + iconName.charAt(0).toUpperCase() + iconName.slice(1);
-  }
-  const IconComponent = (FaIcons as any)[formattedName];
-  if (IconComponent) {
-    return <IconComponent className="w-6 h-6 text-brand-primary dark:text-brand-accent" />;
-  }
-  return <FaIcons.FaDatabase className="w-6 h-6 text-brand-primary dark:text-brand-accent" />;
+  return <IconResolver name={iconName} className="w-6 h-6 text-brand-primary dark:text-brand-accent" />;
 }
 
 export default function ServicesClient({ processSteps }: ServicesClientProps) {

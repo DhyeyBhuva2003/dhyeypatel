@@ -1,8 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FaArrowRight, FaCode, FaRocket, FaServer, FaDatabase, FaGithub, FaLinkedin, FaEnvelope, FaCommentDots, FaChevronDown, FaBriefcase, FaMicrochip, FaSmile, FaClock } from "react-icons/fa";
-import * as FaIcons from "react-icons/fa";
+import { FaArrowRight, FaCode, FaServer, FaCommentDots, FaBriefcase, FaMicrochip, FaSmile, FaClock } from "react-icons/fa";
 import { SiNextdotjs, SiReact, SiNodedotjs, SiTypescript, SiMongodb } from "react-icons/si";
 import { FaAws } from "react-icons/fa";
 import connectToDatabase from "@/lib/db";
@@ -14,20 +13,13 @@ import { getPersonSchema } from "@/lib/seo";
 import FadeIn from "@/components/FadeIn";
 import SkillsSection from "@/components/SkillsSection";
 import Magnetic from "@/components/Magnetic";
+import IconResolver from "@/components/IconResolver";
 
 export const revalidate = 3600; // Revalidate page every hour
 
 // Helper to map icon string to React Icon component dynamically
 function getIconComponent(iconName: string) {
-  let formattedName = iconName;
-  if (iconName && !iconName.startsWith("Fa")) {
-    formattedName = "Fa" + iconName.charAt(0).toUpperCase() + iconName.slice(1);
-  }
-  const IconComponent = (FaIcons as any)[formattedName];
-  if (IconComponent) {
-    return <IconComponent className="w-5 h-5 text-brand-primary dark:text-brand-accent" />;
-  }
-  return <FaIcons.FaDatabase className="w-5 h-5 text-brand-primary dark:text-brand-accent" />;
+  return <IconResolver name={iconName} className="w-5 h-5 text-brand-primary dark:text-brand-accent" />;
 }
 
 // Code Preview Card
@@ -114,60 +106,56 @@ export default async function Home() {
 
           {/* LEFT — Text */}
           <div className="space-y-7 z-10 text-center lg:text-left">
-            <FadeIn direction="up" delay={0.1}>
+            <div>
               <h1 className="text-5xl sm:text-6xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.08] text-text-main">
                 Architecting{" "}
                 <span className="text-brand-primary">Scalable SaaS</span>
                 {" "}&amp; Intelligent Systems
               </h1>
-            </FadeIn>
+            </div>
 
-            <FadeIn direction="up" delay={0.2}>
+            <div>
               <p className="text-base lg:text-lg text-text-sub leading-relaxed max-w-lg mx-auto lg:mx-0">
                 I build secure, high-performance web applications, tune databases, and orchestrate AI-driven workflows that help businesses scale.
               </p>
-            </FadeIn>
+            </div>
 
-            <FadeIn direction="up" delay={0.3}>
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                <Magnetic>
-                  <Link
-                    href="/portfolio"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-white bg-brand-primary hover:bg-brand-primary/90 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-xl shadow-brand-primary/25"
-                  >
-                    <span>View My Work</span>
-                    <FaArrowRight size={13} />
-                  </Link>
-                </Magnetic>
-                <Magnetic>
-                  <Link
-                    href="/contact"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-text-main border border-border-main hover:bg-bg-sub/60 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97]"
-                  >
-                    <span>Let&apos;s Talk</span>
-                    <FaCommentDots size={13} />
-                  </Link>
-                </Magnetic>
-              </div>
-            </FadeIn>
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <Magnetic>
+                <Link
+                  href="/portfolio"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-white bg-brand-primary hover:bg-brand-primary/90 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-xl shadow-brand-primary/25"
+                >
+                  <span>View My Work</span>
+                  <FaArrowRight size={13} />
+                </Link>
+              </Magnetic>
+              <Magnetic>
+                <Link
+                  href="/contact"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl font-bold text-text-main border border-border-main hover:bg-bg-sub/60 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97]"
+                >
+                  <span>Let&apos;s Talk</span>
+                  <FaCommentDots size={13} />
+                </Link>
+              </Magnetic>
+            </div>
 
             {/* Stats row */}
-            <FadeIn direction="up" delay={0.45}>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border-main max-w-lg mx-auto lg:mx-0">
-                {[
-                  { icon: <FaBriefcase className="text-brand-primary" size={14} />, value: "25+", label: "Projects Completed" },
-                  { icon: <FaMicrochip className="text-brand-primary" size={14} />, value: "10+", label: "Technologies" },
-                  { icon: <FaSmile className="text-brand-primary" size={14} />, value: "15+", label: "Happy Clients" },
-                  { icon: <FaClock className="text-brand-primary" size={14} />, value: "2+", label: "Years Experience" },
-                ].map((s, i) => (
-                  <div key={i} className="flex flex-col gap-0.5">
-                    <div className="flex items-center gap-1.5 text-text-sub mb-0.5">{s.icon}</div>
-                    <div className="text-2xl font-extrabold text-text-main">{s.value}</div>
-                    <div className="text-[11px] text-text-sub leading-tight">{s.label}</div>
-                  </div>
-                ))}
-              </div>
-            </FadeIn>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border-main max-w-lg mx-auto lg:mx-0">
+              {[
+                { icon: <FaBriefcase className="text-brand-primary" size={14} />, value: "25+", label: "Projects Completed" },
+                { icon: <FaMicrochip className="text-brand-primary" size={14} />, value: "10+", label: "Technologies" },
+                { icon: <FaSmile className="text-brand-primary" size={14} />, value: "15+", label: "Happy Clients" },
+                { icon: <FaClock className="text-brand-primary" size={14} />, value: "2+", label: "Years Experience" },
+              ].map((s, i) => (
+                <div key={i} className="flex flex-col gap-0.5">
+                  <div className="flex items-center gap-1.5 text-text-sub mb-0.5">{s.icon}</div>
+                  <div className="text-2xl font-extrabold text-text-main">{s.value}</div>
+                  <div className="text-[11px] text-text-sub leading-tight">{s.label}</div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* RIGHT — Person + Code card + floating badges */}
@@ -182,18 +170,18 @@ export default async function Home() {
             <div className="absolute top-[48%] left-[23%] lg:left-[21%] w-2.5 h-2.5 rounded-full bg-blue-300 shadow-[0_0_12px_5px_rgba(96,165,250,0.5)] animate-pulse hidden lg:block" />
             <div className="absolute top-[38%] right-[22%] lg:right-[20%] w-2 h-2 rounded-full bg-blue-300 shadow-[0_0_10px_4px_rgba(96,165,250,0.4)] animate-pulse hidden lg:block" />
 
-            {/* Person image — natural, no circle clip */}
-            <FadeIn direction="up" delay={0.25}>
-              <div className="relative z-10 h-[420px] lg:h-[520px] w-[280px] lg:w-[400px]">
-                <Image
-                  src="/DhyeyFinal.png"
-                  alt="Dhyey Bhuva"
-                  fill
-                  priority
-                  className="object-cover object-top"
-                />
-              </div>
-            </FadeIn>
+            {/* Person image — LCP element, rendered immediately without Framer Motion delay */}
+            <div className="relative z-10 h-[420px] lg:h-[520px] w-[280px] lg:w-[400px]">
+              <Image
+                src="/DhyeyFinal.png"
+                alt="Dhyey Bhuva"
+                fill
+                priority
+                fetchPriority="high"
+                sizes="(max-width: 768px) 280px, (max-width: 1024px) 350px, 400px"
+                className="object-cover object-top"
+              />
+            </div>
 
             {/* Code card — bottom left */}
             <FadeIn direction="right" delay={0.45} className="hidden lg:block">

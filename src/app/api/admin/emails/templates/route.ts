@@ -29,7 +29,6 @@ export async function GET(request: Request) {
 
     await connectToDatabase();
 
-    // eslint-disable-next-line @typescript-eslint/no-zero-assertions, @typescript-eslint/no-explicit-any
     const filter: any = {};
     if (search) {
       filter.$or = [

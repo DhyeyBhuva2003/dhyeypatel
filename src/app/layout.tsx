@@ -3,13 +3,12 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Providers from "@/components/Providers";
-import CustomCursor from "@/components/CustomCursor";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
-import CookieConsent from "@/components/CookieConsent";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -19,7 +18,7 @@ export const metadata: Metadata = {
   },
   description:
     "Personal Brand, Portfolio, and Freelance Services platform for Dhyey Bhuva. Custom SaaS MVP builds, backend optimizations, and AI agent automation.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dhyeybhuva.tech" || "https://dhyeybhuva.netlify.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dhyeybhuva.tech"),
   openGraph: {
     title: "Dhyey Bhuva | Full Stack Developer",
     url: "https://dhyeybhuva.tech",
@@ -66,13 +65,12 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-bg-main text-text-main antialiased" suppressHydrationWarning>
         <ThemeProvider>
           <Providers>
-            <CustomCursor />
             <GoogleAnalytics />
             {children}
-            <CookieConsent />
           </Providers>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+

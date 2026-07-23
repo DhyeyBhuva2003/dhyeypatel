@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   SiNextdotjs,
   SiReact,
@@ -26,7 +24,6 @@ import {
 } from "react-icons/si";
 import {
   FaAws,
-  FaGitAlt,
   FaLinux,
   FaGithub,
   FaServer,
@@ -35,11 +32,6 @@ import {
   FaDatabase,
   FaRegFileCode
 } from "react-icons/fa";
-
-// Register ScrollTrigger plugin on the client side
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 // Categories Data
 const categories = [
@@ -122,65 +114,72 @@ export default function SkillsSection() {
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Single context for unified GSAP animations
-    const sectionCtx = gsap.context(() => {
-      // Create a master timeline for the entire section triggered by scroll
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
-          toggleActions: "play none none none",
-        }
-      });
+    let ctx: any;
+    let isActive = true;
 
-      // 1. Overall Section Fade In & Slide Up (snappy y offset)
-      tl.fromTo(sectionRef.current,
-        { y: 40, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
-      );
+    Promise.all([
+      import("gsap"),
+      import("gsap/ScrollTrigger")
+    ]).then(([gsapModule, scrollTriggerModule]) => {
+      if (!isActive) return;
+      const gsap = gsapModule.default;
+      const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+      gsap.registerPlugin(ScrollTrigger);
 
-      // 2. Card Animation - Appear sequentially with stagger delay in the same timeline
-      const cards = gsap.utils.toArray<HTMLElement>(".skills-card");
-      tl.fromTo(cards,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, stagger: 0.12, ease: "power2.out" },
-        "-=0.4"
-      ); // Slightly overlap to feel fast and seamless
-
-      // 3. Icon Animation - Scale from 0.85 to 1, rotate slightly
-      const techIcons = gsap.utils.toArray<HTMLElement>(".tech-icon");
-      tl.fromTo(techIcons,
-        { scale: 0.85, rotation: -4, opacity: 0.5 },
-        { scale: 1, rotation: 0, opacity: 1, duration: 0.4, stagger: 0.02, ease: "back.out(1.5)" },
-        "-=0.4"
-      );
-
-      // 4. Stats Counter Animation using GSAP CountUp mechanism
-      const counterElements = gsap.utils.toArray<HTMLElement>(".stat-counter");
-      counterElements.forEach((el) => {
-        const target = parseInt(el.getAttribute("data-target") || "0", 10);
-        const suffix = el.getAttribute("data-suffix") || "";
-        const obj = { val: 0 };
-
-        gsap.to(obj, {
-          val: target,
-          duration: 1.5,
-          ease: "power2.out",
+      ctx = gsap.context(() => {
+        const tl = gsap.timeline({
           scrollTrigger: {
-            trigger: el,
-            start: "top 90%",
+            trigger: sectionRef.current,
+            start: "top 85%",
             toggleActions: "play none none none",
-          },
-          onUpdate: () => {
-            el.textContent = Math.floor(obj.val) + suffix;
           }
         });
-      });
 
-    }, sectionRef);
+        tl.fromTo(sectionRef.current,
+          { y: 40, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" }
+        );
+
+        const cards = gsap.utils.toArray<HTMLElement>(".skills-card");
+        tl.fromTo(cards,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, stagger: 0.12, ease: "power2.out" },
+          "-=0.4"
+        );
+
+        const techIcons = gsap.utils.toArray<HTMLElement>(".tech-icon");
+        tl.fromTo(techIcons,
+          { scale: 0.85, rotation: -4, opacity: 0.5 },
+          { scale: 1, rotation: 0, opacity: 1, duration: 0.4, stagger: 0.02, ease: "back.out(1.5)" },
+          "-=0.4"
+        );
+
+        const counterElements = gsap.utils.toArray<HTMLElement>(".stat-counter");
+        counterElements.forEach((el) => {
+          const target = parseInt(el.getAttribute("data-target") || "0", 10);
+          const suffix = el.getAttribute("data-suffix") || "";
+          const obj = { val: 0 };
+
+          gsap.to(obj, {
+            val: target,
+            duration: 1.5,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 90%",
+              toggleActions: "play none none none",
+            },
+            onUpdate: () => {
+              el.textContent = Math.floor(obj.val) + suffix;
+            }
+          });
+        });
+      }, sectionRef);
+    });
 
     return () => {
-      sectionCtx.revert();
+      isActive = false;
+      if (ctx) ctx.revert();
     };
   }, []);
 

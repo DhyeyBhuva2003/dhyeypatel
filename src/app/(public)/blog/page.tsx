@@ -13,7 +13,7 @@ interface BlogPageProps {
 export async function generateMetadata({ searchParams }: BlogPageProps) {
   const { category, q } = await searchParams;
   let title = "Technical Publication | Dhyey Bhuva";
-  let description = "Detailed engineering write-ups, backend optimizations, and tips on structuring robust Next.js and MongoDB layouts.";
+  const description = "Detailed engineering write-ups, backend optimizations, and tips on structuring robust Next.js and MongoDB layouts.";
 
   if (category) {
     title = `${category} Articles | Dhyey Bhuva`;
