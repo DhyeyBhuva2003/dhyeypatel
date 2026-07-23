@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { FaArrowLeft, FaCheckCircle, FaChevronRight } from "react-icons/fa";
-import * as FaIcons from "react-icons/fa";
+import IconResolver from "@/components/IconResolver";
 import { useServiceDetails } from "@/hooks/useServices";
 import FadeIn from "@/components/FadeIn";
 import { ServiceDetailsSkeleton } from "@/components/ui/Skeletons";
@@ -14,15 +14,7 @@ interface ServiceDetailsClientProps {
 }
 
 function getIconComponent(iconName: string) {
-  let formattedName = iconName;
-  if (iconName && !iconName.startsWith("Fa")) {
-    formattedName = "Fa" + iconName.charAt(0).toUpperCase() + iconName.slice(1);
-  }
-  const IconComponent = (FaIcons as any)[formattedName];
-  if (IconComponent) {
-    return <IconComponent className="w-8 h-8 text-brand-primary dark:text-brand-accent" />;
-  }
-  return <FaIcons.FaDatabase className="w-8 h-8 text-brand-primary dark:text-brand-accent" />;
+  return <IconResolver name={iconName} className="w-8 h-8 text-brand-primary dark:text-brand-accent" />;
 }
 
 export default function ServiceDetailsClient({ slug }: ServiceDetailsClientProps) {

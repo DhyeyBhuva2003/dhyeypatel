@@ -67,6 +67,8 @@ export default function About() {
                 width={800}
                 height={1000}
                 priority
+                fetchPriority="high"
+                sizes="(max-width: 768px) 100vw, 448px"
                 className="h-auto w-full object-contain transition-transform duration-500 hover:scale-[1.02]"
               />
             </div>
@@ -85,7 +87,7 @@ export default function About() {
           </FadeIn>
           <FadeIn direction="up" delay={0.1}>
             <p className="text-text-sub leading-relaxed text-base md:text-lg">
-              I'm a passionate MERN Stack Developer focused on building scalable, secure, and high-performance web applications. I specialize in Next.js, React.js, Node.js, Express.js, MongoDB, and PostgreSQL, creating enterprise solutions including ERP, CRM, POS, and custom business applications.
+              I&apos;m a passionate MERN Stack Developer focused on building scalable, secure, and high-performance web applications. I specialize in Next.js, React.js, Node.js, Express.js, MongoDB, and PostgreSQL, creating enterprise solutions including ERP, CRM, POS, and custom business applications.
             </p>
           </FadeIn>
           <FadeIn direction="up" delay={0.15}>

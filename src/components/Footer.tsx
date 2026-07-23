@@ -2,8 +2,6 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { toast } from "sonner";
 import {
   FaGithub,
@@ -27,11 +25,6 @@ import {
   trackEvent,
   trackBookConsultationClick
 } from "@/lib/analytics";
-
-// Register ScrollTrigger plugin on client side
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 // Social Icons Data
 const socialLinks = [
@@ -104,41 +97,52 @@ export default function Footer() {
 
   // GSAP Animations (using fromTo to bypass StrictMode duplicate run opacity locking)
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // 1. Footer Container Slide Up and Fade In on scroll
-      const mainTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top 90%",
-          toggleActions: "play none none none",
-        }
-      });
+    let ctx: any;
+    let isActive = true;
 
-      mainTl.fromTo(footerRef.current,
-        { y: 60, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.2, ease: "power3.out" }
-      );
+    Promise.all([
+      import("gsap"),
+      import("gsap/ScrollTrigger")
+    ]).then(([gsapModule, scrollTriggerModule]) => {
+      if (!isActive) return;
+      const gsap = gsapModule.default;
+      const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
+      gsap.registerPlugin(ScrollTrigger);
 
-      // 2. Footer Columns Reveal Sequentially
-      const columns = gsap.utils.toArray<HTMLElement>(".footer-column");
-      mainTl.fromTo(columns,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6, stagger: 0.15, ease: "power2.out" },
-        "-=0.8"
-      );
+      ctx = gsap.context(() => {
+        const mainTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: "top 90%",
+            toggleActions: "play none none none",
+          }
+        });
 
-      // 3. Social Icons Stagger Animation
-      const socialIcons = gsap.utils.toArray<HTMLElement>(".social-btn");
-      mainTl.fromTo(socialIcons,
-        { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: "back.out(1.7)" },
-        "-=0.6"
-      );
+        mainTl.fromTo(footerRef.current,
+          { y: 60, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.2, ease: "power3.out" }
+        );
 
+        const columns = gsap.utils.toArray<HTMLElement>(".footer-column");
+        mainTl.fromTo(columns,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, stagger: 0.15, ease: "power2.out" },
+          "-=0.8"
+        );
 
-    }, footerRef);
+        const socialIcons = gsap.utils.toArray<HTMLElement>(".social-btn");
+        mainTl.fromTo(socialIcons,
+          { scale: 0.8, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: "back.out(1.7)" },
+          "-=0.6"
+        );
+      }, footerRef);
+    });
 
-    return () => ctx.revert();
+    return () => {
+      isActive = false;
+      if (ctx) ctx.revert();
+    };
   }, []);
 
   return (

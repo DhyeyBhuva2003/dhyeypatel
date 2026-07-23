@@ -5,11 +5,10 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 
 type CursorType = "default" | "hover" | "magnetic" | "text" | "hidden";
 
-export default function CustomCursor() {
+function CustomCursorInner() {
   const [cursorType, setCursorType] = useState<CursorType>("default");
   const [isClicking, setIsClicking] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [enabled, setEnabled] = useState(false);
 
   // High performance Motion Values for direct coordinate translation
   const mouseX = useMotionValue(-100);
@@ -20,13 +19,6 @@ export default function CustomCursor() {
   const ringY = useSpring(mouseY, { stiffness: 350, damping: 30, mass: 0.4 });
 
   useEffect(() => {
-    // 1. Device check: Only disable if there is NO fine pointer (mouse/trackpad) available
-    const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
-    if (!hasFinePointer) {
-      return;
-    }
-
-    setEnabled(true);
     document.body.classList.add("custom-cursor-active");
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -92,8 +84,6 @@ export default function CustomCursor() {
       window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [mouseX, mouseY]);
-
-  if (!enabled) return null;
 
   // Visual settings depending on current interactive state
   const ringVariants = {
@@ -219,3 +209,18 @@ export default function CustomCursor() {
     </motion.div>
   );
 }
+
+export default function CustomCursor() {
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const hasFinePointer = window.matchMedia("(pointer: fine)").matches;
+    if (hasFinePointer) {
+      setEnabled(true);
+    }
+  }, []);
+
+  if (!enabled) return null;
+  return <CustomCursorInner />;
+}
+
