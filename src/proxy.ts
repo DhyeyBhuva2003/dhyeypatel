@@ -5,24 +5,6 @@ import { verifyToken } from "@/lib/jwt";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Protect admin page routes
-  if (pathname.startsWith("/admin")) {
-    const token = request.cookies.get("admin_token")?.value;
-
-    if (!token) {
-      const url = new URL("/login", request.url);
-      url.searchParams.set("from", pathname);
-      return NextResponse.redirect(url);
-    }
-
-    const payload = await verifyToken(token);
-    if (!payload || payload.role !== "ADMIN") {
-      const url = new URL("/login", request.url);
-      url.searchParams.set("from", pathname);
-      return NextResponse.redirect(url);
-    }
-  }
-
   // Protect admin API routes
   if (pathname.startsWith("/api/admin")) {
     const token = request.cookies.get("admin_token")?.value;
@@ -46,7 +28,7 @@ export async function proxy(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Map the middleware to target administrative pages and API directories
+// Map the middleware to target administrative API directories
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/api/admin/:path*"],
 };
