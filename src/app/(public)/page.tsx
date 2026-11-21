@@ -1,9 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FaArrowRight, FaCode, FaServer, FaCommentDots, FaBriefcase, FaMicrochip, FaSmile, FaClock } from "react-icons/fa";
-import { SiNextdotjs, SiReact, SiNodedotjs, SiTypescript, SiMongodb } from "react-icons/si";
-import { FaAws } from "react-icons/fa";
+import { FaArrowRight, FaCode, FaServer, FaCommentDots } from "react-icons/fa";
+import HeroStats from "@/components/HeroStats";
 import connectToDatabase from "@/lib/db";
 import Project from "@/models/Project";
 import Service from "@/models/Service";
@@ -85,7 +84,7 @@ export default async function Home() {
       />
 
       {/* 1. Hero Section */}
-      <section className="relative min-h-screen flex flex-col overflow-hidden">
+      <section className="relative flex flex-col overflow-hidden">
 
         {/* Scattered stars */}
         <div className="absolute inset-0 pointer-events-none -z-10">
@@ -101,8 +100,8 @@ export default async function Home() {
           ))}
         </div>
 
-        {/* Main grid */}
-        <div className="flex-1 max-w-[1400px] mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-4 items-center pt-16 pb-4">
+        {/* Main grid — reduced top padding to slide section up cleanly */}
+        <div className="flex-1 max-w-[1400px] mx-auto px-6 md:px-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-4 items-center pt-2 sm:pt-4 pb-4">
 
           {/* LEFT — Text */}
           <div className="space-y-7 z-10 text-center lg:text-left">
@@ -141,21 +140,8 @@ export default async function Home() {
               </Magnetic>
             </div>
 
-            {/* Stats row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border-main max-w-lg mx-auto lg:mx-0">
-              {[
-                { icon: <FaBriefcase className="text-brand-primary" size={14} />, value: "25+", label: "Projects Completed" },
-                { icon: <FaMicrochip className="text-brand-primary" size={14} />, value: "10+", label: "Technologies" },
-                { icon: <FaSmile className="text-brand-primary" size={14} />, value: "15+", label: "Happy Clients" },
-                { icon: <FaClock className="text-brand-primary" size={14} />, value: "2+", label: "Years Experience" },
-              ].map((s, i) => (
-                <div key={i} className="flex flex-col gap-0.5">
-                  <div className="flex items-center gap-1.5 text-text-sub mb-0.5">{s.icon}</div>
-                  <div className="text-2xl font-extrabold text-text-main">{s.value}</div>
-                  <div className="text-[11px] text-text-sub leading-tight">{s.label}</div>
-                </div>
-              ))}
-            </div>
+            {/* Stats row with animated counter and SEO-friendly markup */}
+            <HeroStats />
           </div>
 
           {/* RIGHT — Person + Code card + floating badges */}
@@ -210,29 +196,6 @@ export default async function Home() {
 
           </div>
         </div>
-
-        {/* Trusted by Technologies bar */}
-        <FadeIn direction="up" delay={0.7}>
-          <div className="max-w-[1400px] mx-auto px-6 md:px-12 w-full pb-10">
-            <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-text-sub mb-5">Trusted by Technologies</p>
-            <div className="flex flex-wrap items-center gap-8 text-text-sub">
-              {[
-                { icon: <SiNextdotjs size={18} />, label: "Next.js" },
-                { icon: <SiReact size={18} className="text-cyan-400" />, label: "React" },
-                { icon: <SiNodedotjs size={18} className="text-green-500" />, label: "Node.js" },
-                { icon: <SiTypescript size={18} className="text-blue-400" />, label: "TypeScript" },
-                { icon: <SiMongodb size={18} className="text-green-400" />, label: "MongoDB" },
-                { icon: <FaAws size={20} className="text-orange-400" />, label: "AWS" },
-              ].map((tech, i) => (
-                <div key={i} className="flex items-center gap-2 text-sm font-medium hover:text-text-main transition">
-                  {tech.icon}
-                  <span>{tech.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </FadeIn>
-
 
       </section>
 

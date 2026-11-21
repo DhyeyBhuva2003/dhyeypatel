@@ -101,14 +101,6 @@ const categories = [
   }
 ];
 
-// Stats Data
-const stats = [
-  { target: 25, suffix: "+", label: "Projects Completed" },
-  { target: 10, suffix: "+", label: "Technologies" },
-  { target: 15, suffix: "+", label: "Happy Clients" },
-  { target: 2, suffix: "+", label: "Years Experience" }
-];
-
 export default function SkillsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -153,27 +145,6 @@ export default function SkillsSection() {
           { scale: 1, rotation: 0, opacity: 1, duration: 0.4, stagger: 0.02, ease: "back.out(1.5)" },
           "-=0.4"
         );
-
-        const counterElements = gsap.utils.toArray<HTMLElement>(".stat-counter");
-        counterElements.forEach((el) => {
-          const target = parseInt(el.getAttribute("data-target") || "0", 10);
-          const suffix = el.getAttribute("data-suffix") || "";
-          const obj = { val: 0 };
-
-          gsap.to(obj, {
-            val: target,
-            duration: 1.5,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 90%",
-              toggleActions: "play none none none",
-            },
-            onUpdate: () => {
-              el.textContent = Math.floor(obj.val) + suffix;
-            }
-          });
-        });
       }, sectionRef);
     });
 
@@ -267,24 +238,6 @@ export default function SkillsSection() {
                 <span className="font-bold text-text-main">{cat.projects}</span>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Stats Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-10 border-t border-b border-zinc-200/60 dark:border-zinc-800/60 bg-zinc-500/5 rounded-2xl backdrop-blur-sm max-w-5xl mx-auto px-6 md:px-12">
-        {stats.map((s, idx) => (
-          <div key={idx} className="text-center space-y-1">
-            <span
-              className="stat-counter block text-3xl sm:text-4xl font-extrabold text-brand-primary dark:text-brand-accent tracking-tight"
-              data-target={s.target}
-              data-suffix={s.suffix}
-            >
-              0
-            </span>
-            <span className="block text-xs text-text-sub font-medium uppercase tracking-wider">
-              {s.label}
-            </span>
           </div>
         ))}
       </div>
